@@ -8,9 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace>
-    </RootNamespace>
-    <ProjectGuid>{BDDC5051-6ED7-0C19-1A8A-080BFE68BA96}</ProjectGuid>
+    <RootNamespace></RootNamespace>
+    <ProjectGuid>{5150DCBD-D76E-190C-1A8A-080BFE68BA96}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -55,9 +54,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\GameBoard.cs" />
-    <Compile Include="Assets\Scripts\Tile.cs" />
     <Compile Include="Assets\Scripts\palette.cs" />
-    <Compile Include="Assets\Scripts\TempTileAttribute.cs" />
+    <Compile Include="Assets\Scripts\TileAttribute.cs" />
+    <Compile Include="Assets\Scripts\Tile.cs" />
+    <Compile Include="Assets\Scripts\EdgeTile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

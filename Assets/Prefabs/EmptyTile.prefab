@@ -128,8 +128,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   position: {x: 0, y: 0}
-  tempTitleAttributePrefab: {fileID: 4496832585691705326, guid: 72d058aabcd4a154d956a4af84519f1e,
+  tileAttributePrefab: {fileID: 4496832585691705326, guid: 72d058aabcd4a154d956a4af84519f1e,
     type: 3}
-  tempTitleAttribute: {fileID: 0}
+  tileAttribute: {fileID: 0}
   myFirstSprite: {fileID: 21300000, guid: 179284bb26207824496fb335f3b37b46, type: 3}
   mySecondSprite: {fileID: 21300000, guid: 2b0d6ad25cdab7146b96512a128884b4, type: 3}
