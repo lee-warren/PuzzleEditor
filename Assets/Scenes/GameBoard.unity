@@ -465,16 +465,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   puzzleGameBoard: {fileID: 511938112}
-  pallette: {fileID: 1836145109}
-  tileColumns: 15
-  tileRows: 15
+  palette: {fileID: 1836145109}
+  tileRowColumns: 4
   tileSpacing: 0.1
   distanceFromCenterToEdge: {x: 0, y: 0}
   screenSize: {x: 0, y: 0}
   bottomLeftCorner: {x: 0, y: 0}
   tilePrefab: {fileID: 6909664195846588925, guid: 8222407e7ff3a844cb6344c67d3b80d3,
     type: 3}
-  palletteTiles: []
+  paletteTiles: []
+  edgeTilePrefab: {fileID: 4607835838335386728, guid: ab0cf963960666f47b7bde7082ed8544,
+    type: 3}
   selectedTile: {fileID: 0}
 --- !u!224 &1398441463
 RectTransform:

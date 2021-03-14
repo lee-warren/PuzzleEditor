@@ -5,10 +5,9 @@ using UnityEngine;
 public class GameBoard : MonoBehaviour
 {
     public GameObject puzzleGameBoard;
-    public GameObject pallette;
+    public GameObject palette;
 
-    public int tileColumns = 1;
-    public int tileRows = 1;
+    public int tileRowColumns = 1;
     public float tileSpacing = 0.1f;
     public Vector2 distanceFromCenterToEdge;
     public Vector2 screenSize;
@@ -16,9 +15,12 @@ public class GameBoard : MonoBehaviour
     
     public GameObject tilePrefab;
     public GameObject[,] tiles;
-    public GameObject[] palletteTiles;
+    public GameObject[] paletteTiles;
 
-    public Tile selectedTile;
+    public GameObject edgeTilePrefab;
+    public GameObject[,] edgeTiles;
+
+    public GameObject selectedTile;
 
     public static GameBoard instance;            //A reference to our game control script so we can access it statically.
     void Awake()
@@ -34,31 +36,28 @@ public class GameBoard : MonoBehaviour
     }
     void Start()
     {
-        //distanceFromCenterToEdge = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));
-        //screenSize = new Vector2(distanceFromCenterToEdge.x*2, distanceFromCenterToEdge.y*2);
-        //bottomLeftCorner = new Vector2(-distanceFromCenterToEdge.x, -distanceFromCenterToEdge.y);
-
         //This will hold all of the information on what should go on the screen
 
         //initialise the pallete, and all of the squares to go in there
-        palletteTiles = new GameObject[tileColumns];
-        for (int j = 0; j < tileColumns; j++)
+        paletteTiles = new GameObject[tileRowColumns];
+        for (int j = 0; j < tileRowColumns; j++)
         {
-            palletteTiles[j] = (GameObject)Instantiate(tilePrefab, new Vector2(0, 0), Quaternion.identity, pallette.transform);
-            var tile = palletteTiles[j].GetComponent<Tile>();
+            paletteTiles[j] = (GameObject)Instantiate(tilePrefab, new Vector2(0, 0), Quaternion.identity, palette.transform);
+            var tile = paletteTiles[j].GetComponent<Tile>();
             if (tile)
             {
                 tile.InitialiseForPalette(new Vector2(1, j));
             }
-            //Debug.Log("Tile Height : " + tiles[i,j].transform.localScale.x);
 
         }
-
+        //resize the palette
+        //to-do
+        
         //initialise all of the empty squares from the tile prefab to go in the game board:
-        tiles = new GameObject[tileRows,tileColumns];
-        for (int i =0; i< tileRows; i++)
+        tiles = new GameObject[tileRowColumns,tileRowColumns];
+        for (int i =0; i< tileRowColumns; i++)
         {
-            for (int j =0; j< tileColumns; j++)
+            for (int j =0; j< tileRowColumns; j++)
             {
                 tiles[i,j] = (GameObject)Instantiate(tilePrefab, new Vector2(0,0), Quaternion.identity, puzzleGameBoard.transform);
                 var tile = tiles[i,j].GetComponent<Tile>();
@@ -69,7 +68,23 @@ public class GameBoard : MonoBehaviour
                 //Debug.Log("Tile Height : " + tiles[i,j].transform.localScale.x);
 
             } 
-       }
+        }
+        
+
+        //create all the empty squares for the edge tiles:
+        edgeTiles = new GameObject[4, tileRowColumns];
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < tileRowColumns; j++)
+            {
+                edgeTiles[i, j] = (GameObject)Instantiate(edgeTilePrefab, new Vector2(0, 0), Quaternion.identity, puzzleGameBoard.transform);
+                var tile = edgeTiles[i, j].GetComponent<EdgeTile>();
+                if (tile)
+                {
+                    tile.InitialiseForPuzzleGameBoard(i, j);
+                }
+            }
+        }
 
     }
 
