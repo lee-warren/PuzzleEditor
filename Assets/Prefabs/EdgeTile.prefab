@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: -780842941
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 48b1fa44801c9374881794418079c3d5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 476aaef892aa796429b886e8386c1f50, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -102,8 +102,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   position: {x: 0, y: 0}
-  myFirstSprite: {fileID: 0}
-  mySecondSprite: {fileID: 0}
+  edgeTileAttributePrefab: {fileID: 2242023963733443389, guid: e99457f031d56f742976aacf2f923797,
+    type: 3}
+  edgeTileAttribute: {fileID: 0}
+  myFirstSprite: {fileID: 21300000, guid: 476aaef892aa796429b886e8386c1f50, type: 3}
+  mySecondSprite: {fileID: 21300000, guid: 9f736052c55de6441962d58310b45627, type: 3}
 --- !u!61 &-594436252186423657
 BoxCollider2D:
   m_ObjectHideFlags: 0

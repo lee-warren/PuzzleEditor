@@ -6,6 +6,7 @@ public class GameBoard : MonoBehaviour
 {
     public GameObject puzzleGameBoard;
     public GameObject palette;
+    public GameObject edgePalette;
 
     public int tileRowColumns = 1;
     public float tileSpacing = 0.1f;
@@ -19,8 +20,11 @@ public class GameBoard : MonoBehaviour
 
     public GameObject edgeTilePrefab;
     public GameObject[,] edgeTiles;
+    public GameObject[] edgePaletteTiles;
+
 
     public GameObject selectedTile;
+    public GameObject selectedEdgeTile;
 
     public static GameBoard instance;            //A reference to our game control script so we can access it statically.
     void Awake()
@@ -39,8 +43,8 @@ public class GameBoard : MonoBehaviour
         //This will hold all of the information on what should go on the screen
 
         //initialise the pallete, and all of the squares to go in there
-        paletteTiles = new GameObject[tileRowColumns];
-        for (int j = 0; j < tileRowColumns; j++)
+        paletteTiles = new GameObject[tileRowColumns + 2];
+        for (int j = 0; j < tileRowColumns + 2; j++)
         {
             paletteTiles[j] = (GameObject)Instantiate(tilePrefab, new Vector2(0, 0), Quaternion.identity, palette.transform);
             var tile = paletteTiles[j].GetComponent<Tile>();
@@ -52,7 +56,21 @@ public class GameBoard : MonoBehaviour
         }
         //resize the palette
         //to-do
-        
+
+        //initialise the edgePalette
+        //initialise the pallete, and all of the squares to go in there
+        edgePaletteTiles = new GameObject[tileRowColumns + 2];
+        for (int j = 0; j < tileRowColumns + 2; j++)
+        {
+            edgePaletteTiles[j] = (GameObject)Instantiate(edgeTilePrefab, new Vector2(0, 0), Quaternion.identity, edgePalette.transform);
+            var tile = edgePaletteTiles[j].GetComponent<EdgeTile>();
+            if (tile)
+            {
+                tile.InitialiseForPalette(j);
+            }
+
+        }
+
         //initialise all of the empty squares from the tile prefab to go in the game board:
         tiles = new GameObject[tileRowColumns,tileRowColumns];
         for (int i =0; i< tileRowColumns; i++)
