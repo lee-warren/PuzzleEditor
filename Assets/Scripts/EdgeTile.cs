@@ -9,8 +9,8 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
     GameObject thisEdgeTile;
     RectTransform thisRectTransform;
 
-    //public GameObject edgeTileAttributePrefab;
-    //public GameObject edgeTileAttribute;
+    public GameObject edgeTileAttributePrefab;
+    public GameObject edgeTileAttribute;
 
     SpriteRenderer spriteRenderer;
     public Sprite myFirstSprite;
@@ -57,16 +57,15 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         print(position.x + "," + position.y);
     }
 
-    /*
-    public void InitialiseForPalette(Vector2 rowColumn)
+    public void InitialiseForPalette(int columnPosition)
     {
         isBoardEdgeTile = false;
-        position = rowColumn;
+        position = new Vector2(1, columnPosition);
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         PositionEdgeTileForPalette();
         print(position.x + "," + position.y);
-
+        /*
         edgeTileAttribute = new GameObject();
         edgeTileAttribute = (GameObject)Instantiate(edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
         var attributeEdgeTile = edgeTileAttribute.GetComponent<EdgeTileAttribute>();
@@ -75,14 +74,13 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
             attributeEdgeTile.PositionInEdgeTile();
             attributeEdgeTile.RandomColour();
         }
+        */
     }
-    */
 
     public void OnPointerClick(PointerEventData eventData)
     {
         print("I was clicked (" + position.x + "," + position.y + ")");
-        /*
-         * if (spriteRenderer.sprite == mySecondSprite)
+        if (spriteRenderer.sprite == mySecondSprite)
         {
             spriteRenderer.sprite = myFirstSprite;
         }
@@ -90,6 +88,7 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         {
             spriteRenderer.sprite = mySecondSprite;
         }
+        /*
 
         if (isBoardEdgeTile && GameBoard.instance.selectedEdgeTile)
         {
@@ -128,7 +127,6 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + position.y * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
     }
 
-    /*
     private void PositionEdgeTileForPalette()
     {
         RectTransform parentsRect = thisRectTransform.parent.GetComponent<RectTransform>();
@@ -137,12 +135,10 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         print(thisRectTransform.sizeDelta.x);
 
         //sets size of the square relevant to the parents size
-        transform.localScale = new Vector3(1 - 2 * spacing, (1 - 1 * spacing) / (float)GameBoard.instance.tileRowColumns - spacing, 0);
+        transform.localScale = new Vector3((((1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing))* parentsRect.sizeDelta.y/ parentsRect.sizeDelta.x, (1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing, 0);
 
-        //transform.localPosition = new Vector2(bottomLeftCorner.x - position.x * bottomLeftCorner.x, bottomLeftCorner.y - position.y * bottomLeftCorner.y);
-        transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + position.y * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
+        transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + position.y * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
     }
-    */
 
     // Update is called once per frame
     void Update()
