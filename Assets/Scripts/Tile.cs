@@ -39,52 +39,73 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         print(position.x + "," + position.y);
     }
 
-    public void InitialiseForPalette(Vector2 rowColumn)
+    public void InitialiseForPalette(int column, Sprite attributeSprite)
     {
         isBoardTile = false;
-        position = rowColumn;
+        position = new Vector2(1, column);
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         PositionTileForPalette();
         print(position.x + "," + position.y);
 
-        tileAttribute = new GameObject();
         tileAttribute = (GameObject)Instantiate(tileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
         var attributeTile = tileAttribute.GetComponent<TileAttribute>();
         if (attributeTile)
         {
             attributeTile.PositionInTile();
-            attributeTile.RandomColour();
+            attributeTile.SetSprite(attributeSprite);
         }
     }
 
     public void OnPointerClick(PointerEventData eventData) // 3
     {      
-        print("I was clicked (" + position.x + "," + position.y + ")");
-        if (spriteRenderer.sprite == mySecondSprite) {
-            spriteRenderer.sprite = myFirstSprite;
-        } else {
-            spriteRenderer.sprite = mySecondSprite;
-        }
+        //print("I was clicked (" + position.x + "," + position.y + ")");
 
-        if (isBoardTile && GameBoard.instance.selectedTile)
+        if (isBoardTile)
         {
-            tileAttribute = new GameObject();
-            tileAttribute = (GameObject)Instantiate(tileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
-            var attributeTile = tileAttribute.GetComponent<TileAttribute>();
-            if (attributeTile)
+            if (GameBoard.instance.selectedTile)
             {
-                attributeTile.Copy(GameBoard.instance.selectedTile.GetComponent<TileAttribute>());
+                if (transform.childCount >= 1) //kills all existing children to make way for the new attribute
+                {
+                    foreach (Transform child in transform)
+                    {
+                        GameObject.Destroy(child.gameObject);
+                    }
+                }
+                tileAttribute = (GameObject)Instantiate(tileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
+                var attributeTile = tileAttribute.GetComponent<TileAttribute>();
+                if (attributeTile)
+                {
+                    attributeTile.Copy(GameBoard.instance.selectedTile);
+                }
+
+                spriteRenderer.sprite = mySecondSprite;
+            }
+            else // no tile in the palette is selected
+            {
+                if (tileAttribute)
+                {
+                    tileAttribute.GetComponent<TileAttribute>().ShouldTransform(); //This will change the colour of rotate depending on the attributes type
+                }
             }
         }
         else if (!isBoardTile)
         {
-            GameBoard.instance.selectedTile = new GameObject();
-            GameBoard.instance.selectedTile = (GameObject)Instantiate(tileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
-            var attributeTile = GameBoard.instance.selectedTile.GetComponent<TileAttribute>();
-            if (attributeTile)
+            if (GameBoard.instance.selectedTile == tileAttribute.GetComponent<TileAttribute>())
             {
-                attributeTile.Copy(tileAttribute.GetComponent<TileAttribute>());
+                GameBoard.instance.selectedTile = new TileAttribute();
+                spriteRenderer.sprite = myFirstSprite;
+            }
+            else
+            {
+                //deselect all the other palette tiles:
+                foreach (GameObject child in GameBoard.instance.paletteTiles)
+                {
+                    child.GetComponent<Tile>().spriteRenderer.sprite = myFirstSprite;
+                }
+
+                GameBoard.instance.selectedTile = tileAttribute.GetComponent<TileAttribute>();
+                spriteRenderer.sprite = mySecondSprite;
             }
         }
     }
@@ -113,7 +134,7 @@ private void PositionTileForPuzzleGameBoard() {//sketchy AF... be carefull chang
         //sets size of the square relevant to the parents size
         transform.localScale = new Vector3((((1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing)) * parentsRect.sizeDelta.y / parentsRect.sizeDelta.x, (1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing, 0);
 
-        transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + position.y * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
+        transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + (GameBoard.instance.tileRowColumns + 1 - position.y) * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
     }
 
     // Update is called once per frame
