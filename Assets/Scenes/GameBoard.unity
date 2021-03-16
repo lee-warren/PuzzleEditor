@@ -574,10 +574,16 @@ MonoBehaviour:
   bottomLeftCorner: {x: 0, y: 0}
   tilePrefab: {fileID: 6909664195846588925, guid: 8222407e7ff3a844cb6344c67d3b80d3,
     type: 3}
+  possibleAttributes:
+  - {fileID: 21300000, guid: 401f10a0649cf6a4ca9748cd31556b4b, type: 3}
+  - {fileID: 21300000, guid: edc09f428f8d5bc4e84c2e773e13331e, type: 3}
+  - {fileID: 21300000, guid: e14208d491e36304794871ddc5953583, type: 3}
+  - {fileID: 21300000, guid: b9fa55336c30b7940a7eebe4605252cd, type: 3}
   paletteTiles: []
   edgeTilePrefab: {fileID: 4607835838335386728, guid: ab0cf963960666f47b7bde7082ed8544,
     type: 3}
   edgePaletteTiles: []
+  possibleColours: []
   selectedTile: {fileID: 0}
   selectedEdgeTile: {fileID: 0}
 --- !u!224 &1398441463
