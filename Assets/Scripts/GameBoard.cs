@@ -21,15 +21,17 @@ public class GameBoard : MonoBehaviour
     public GameObject[] paletteTiles;
 
     public GameObject edgeTilePrefab;
+    public Sprite[] possibleEdgeAttributes;
     public GameObject[,] edgeTiles;
     public GameObject[] edgePaletteTiles;
 
     public Color[] possibleColours;
 
     public TileAttribute selectedTile;
-    public GameObject selectedEdgeTile;
+    public TileAttribute selectedEdgeTile;
 
-    public static GameBoard instance;            //A reference to our game control script so we can access it statically.
+    public static GameBoard instance; //A reference to our game control script so we can access it statically.
+
     void Awake()
     {
         //If we don't currently have a game control...
@@ -64,23 +66,19 @@ public class GameBoard : MonoBehaviour
             {
                 tile.InitialiseForPalette(j, possibleAttributes[j]);
             }
-
         }
-        //resize the palette
-        //to-do
 
         //initialise the edgePalette
         //initialise the pallete, and all of the squares to go in there
-        edgePaletteTiles = new GameObject[tileRowColumns + 2];
-        for (int j = 0; j < tileRowColumns + 2; j++)
+        edgePaletteTiles = new GameObject[possibleEdgeAttributes.Length];
+        for (int j = 0; j < possibleEdgeAttributes.Length; j++)
         {
             edgePaletteTiles[j] = (GameObject)Instantiate(edgeTilePrefab, new Vector2(0, 0), Quaternion.identity, edgePalette.transform);
             var tile = edgePaletteTiles[j].GetComponent<EdgeTile>();
             if (tile)
             {
-                tile.InitialiseForPalette(j);
+                tile.InitialiseForPalette(j, possibleEdgeAttributes[j]);
             }
-
         }
 
         //initialise all of the empty squares from the tile prefab to go in the game board:

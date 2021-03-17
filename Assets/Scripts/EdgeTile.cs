@@ -57,60 +57,76 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         print(position.x + "," + position.y);
     }
 
-    public void InitialiseForPalette(int columnPosition)
+    public void InitialiseForPalette(int columnPosition, Sprite attributeSprite)
     {
         isBoardEdgeTile = false;
         position = new Vector2(1, columnPosition);
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         PositionEdgeTileForPalette();
-        print(position.x + "," + position.y);
-        /*
+
         edgeTileAttribute = new GameObject();
         edgeTileAttribute = (GameObject)Instantiate(edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
-        var attributeEdgeTile = edgeTileAttribute.GetComponent<EdgeTileAttribute>();
+        var attributeEdgeTile = edgeTileAttribute.GetComponent<TileAttribute>();
         if (attributeEdgeTile)
         {
-            attributeEdgeTile.PositionInEdgeTile();
-            attributeEdgeTile.RandomColour();
+            attributeEdgeTile.PositionInTile(true); //true for being an edge tile
+            attributeEdgeTile.SetSprite(attributeSprite);
         }
-        */
+
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        print("I was clicked (" + position.x + "," + position.y + ")");
-        if (spriteRenderer.sprite == mySecondSprite)
-        {
-            spriteRenderer.sprite = myFirstSprite;
-        }
-        else
-        {
-            spriteRenderer.sprite = mySecondSprite;
-        }
-        /*
 
-        if (isBoardEdgeTile && GameBoard.instance.selectedEdgeTile)
+        if (isBoardEdgeTile)
         {
-            edgeTileAttribute = new GameObject();
-            edgeTileAttribute = (GameObject)Instantiate(edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
-            var attributeEdgeTile = edgeTileAttribute.GetComponent<EdgeTileAttribute>();
-            if (attributeEdgeTile)
+            if (GameBoard.instance.selectedEdgeTile)
             {
-                attributeEdgeTile.Copy(GameBoard.instance.selectedEdgeTile.GetComponent<EdgeTileAttribute>());
+                if (transform.childCount >= 1) //kills all existing children to make way for the new attribute
+                {
+                    foreach (Transform child in transform)
+                    {
+                        GameObject.Destroy(child.gameObject);
+                    }
+                }
+                edgeTileAttribute = (GameObject)Instantiate(edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
+                var attributeTile = edgeTileAttribute.GetComponent<TileAttribute>();
+                if (attributeTile)
+                {
+                    attributeTile.Copy(GameBoard.instance.selectedEdgeTile);
+                    attributeTile.RotateToFaceCenter(position);
+                }
+
+                spriteRenderer.sprite = mySecondSprite;
+            }
+            else // no tile in the palette is selected
+            {
+                if (edgeTileAttribute)
+                {
+                    edgeTileAttribute.GetComponent<TileAttribute>().ShouldTransform(); //This will change the colour of rotate depending on the attributes type
+                }
             }
         }
         else if (!isBoardEdgeTile)
         {
-            GameBoard.instance.selectedEdgeTile = new GameObject();
-            GameBoard.instance.selectedEdgeTile = (GameObject)Instantiate(edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
-            var attributeEdgeTile = GameBoard.instance.selectedEdgeTile.GetComponent<EdgeTileAttribute>();
-            if (attributeEdgeTile)
+            if (GameBoard.instance.selectedEdgeTile == edgeTileAttribute.GetComponent<TileAttribute>())
             {
-                attributeEdgeTile.Copy(edgeTileAttribute.GetComponent<EdgeTileAttribute>());
+                GameBoard.instance.selectedEdgeTile = new TileAttribute();
+                spriteRenderer.sprite = myFirstSprite;
+            }
+            else
+            {
+                //deselect all the other palette tiles:
+                foreach (GameObject child in GameBoard.instance.edgePaletteTiles)
+                {
+                    child.GetComponent<EdgeTile>().spriteRenderer.sprite = myFirstSprite;
+                }
+
+                GameBoard.instance.selectedEdgeTile = edgeTileAttribute.GetComponent<TileAttribute>();
+                spriteRenderer.sprite = mySecondSprite;
             }
         }
-        */
     }
 
     private void PositionEdgeTileForPuzzleGameBoard()
@@ -137,7 +153,7 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         //sets size of the square relevant to the parents size
         transform.localScale = new Vector3((((1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing))* parentsRect.sizeDelta.y/ parentsRect.sizeDelta.x, (1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing, 0);
 
-        transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + position.y * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
+        transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + (GameBoard.instance.tileRowColumns + 1 - position.y) * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
     }
 
     // Update is called once per frame
