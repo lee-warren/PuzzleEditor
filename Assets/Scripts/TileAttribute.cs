@@ -43,10 +43,15 @@ public class TileAttribute : MonoBehaviour
         colorArrayNumber = tileToCopy.colorArrayNumber;
     }
 
-    public void PositionInTile()
+    public void PositionInTile(bool isEdgeTile = false)
     {
         transform.localScale = new Vector3(1,1,0);
         transform.localPosition = new Vector2(0,0);
+
+        if (isEdgeTile)
+        {
+            //rotate the tile so that the sprite faces towards the board
+        }
     }
 
     public void SetSprite(Sprite attributeSprite)
@@ -58,7 +63,7 @@ public class TileAttribute : MonoBehaviour
 
     public void ShouldTransform()
     {
-        if (type == "Filter")
+        if (type == "Filter" || type == "LightEmitter" || type == "LightReceiver")
         {
             CycleColours();
         }
@@ -77,7 +82,6 @@ public class TileAttribute : MonoBehaviour
         }
 
         thisAttributeRenderer.color = new Color(GameBoard.instance.possibleColours[colorArrayNumber].r/255f, GameBoard.instance.possibleColours[colorArrayNumber].g/255f, GameBoard.instance.possibleColours[colorArrayNumber].b/255, 1);
-
     }
 
     private void Rotate()
@@ -86,9 +90,30 @@ public class TileAttribute : MonoBehaviour
         transform.Rotate(0, 0, -90);
     }
 
-
-    public void RandomColour()
+    public void RotateToFaceCenter(Vector2 position)
     {
-        thisAttributeRenderer.color = new Color(transform.parent.position.y, transform.parent.position.y, transform.parent.position.y, 1f); 
+        //This assumes the initial sprite is facing down
+
+        if (position.x == 0)
+        {
+            rotation = 270;
+            transform.Rotate(0, 0, -270);
+        } 
+        else if (position.x == GameBoard.instance.tileRowColumns + 1)
+        {
+            rotation = 90;
+            transform.Rotate(0, 0, -90);
+        }
+        else if (position.y == 0)
+        {
+            rotation = 180;
+            transform.Rotate(0, 0, -180);
+        }
+        else if (position.y == GameBoard.instance.tileRowColumns + 1)
+        {
+            rotation = 0;
+            //Its already facing the right way. I hope
+        }
+
     }
 }

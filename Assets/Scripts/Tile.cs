@@ -46,7 +46,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         PositionTileForPalette();
-        print(position.x + "," + position.y);
 
         tileAttribute = (GameObject)Instantiate(tileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
         var attributeTile = tileAttribute.GetComponent<TileAttribute>();
