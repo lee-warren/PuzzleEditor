@@ -6,13 +6,16 @@ using UnityEngine.EventSystems;
 public class EdgeTile : MonoBehaviour, IPointerClickHandler
 {
     public Vector2 position;
+    public int side;
+    public int index;
+
     GameObject thisEdgeTile;
     RectTransform thisRectTransform;
 
     public GameObject edgeTileAttributePrefab;
     public GameObject edgeTileAttribute;
 
-    SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     public Sprite myFirstSprite;
     public Sprite mySecondSprite;
 
@@ -27,11 +30,12 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         thisRectTransform = GetComponent<RectTransform>();
     }
 
-    public void InitialiseForPuzzleGameBoard(int side, int index)
+    public void InitialiseForPuzzleGameBoard(int newSide, int newIndex)
     {
-        //rowColumn = 
-            //row is which of the strips it will fall into (top, left, right, bottom)
-            //column is which index of that row it will fal into
+        //side is which of the strips it will fall into (top, left, right, bottom)
+        //index is which index of that row it will fal into
+        side = newSide;
+        index = newIndex;
 
         isBoardEdgeTile = true;
         if (side == 0)// top
@@ -54,7 +58,7 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         PositionEdgeTileForPuzzleGameBoard();
-        print(position.x + "," + position.y);
+        //print(position.x + "," + position.y);
     }
 
     public void InitialiseForPalette(int columnPosition, Sprite attributeSprite)
@@ -134,8 +138,6 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
 
         RectTransform parentsRect = thisRectTransform.parent.GetComponent<RectTransform>();
         Vector2 bottomLeftCorner = new Vector2(-parentsRect.sizeDelta.x / 2, -parentsRect.sizeDelta.y / 2);
-        print(bottomLeftCorner);
-        print(thisRectTransform.sizeDelta.x);
 
         //sets size of the square relevant to the parents size
         transform.localScale = new Vector3((1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing, (1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing, 0);
@@ -147,8 +149,6 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
     {
         RectTransform parentsRect = thisRectTransform.parent.GetComponent<RectTransform>();
         Vector2 bottomLeftCorner = new Vector2(-parentsRect.sizeDelta.x / 2, -parentsRect.sizeDelta.y / 2);
-        print(bottomLeftCorner);
-        print(thisRectTransform.sizeDelta.x);
 
         //sets size of the square relevant to the parents size
         transform.localScale = new Vector3((((1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing))* parentsRect.sizeDelta.y/ parentsRect.sizeDelta.x, (1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing, 0);

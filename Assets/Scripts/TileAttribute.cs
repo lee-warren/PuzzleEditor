@@ -9,9 +9,9 @@ public class TileAttribute : MonoBehaviour
     public RectTransform thisAttributeRectTransform;
     public SpriteRenderer thisAttributeRenderer;
 
-    private string type;
-    private int rotation = 0;
-    private int colorArrayNumber = -1; //no colour
+    public string type;
+    public int rotation = 0;
+    public int colorArrayNumber = -1; //no colour
 
     void Awake()
     {
@@ -29,6 +29,50 @@ public class TileAttribute : MonoBehaviour
     void Update()
     {
         
+    }
+    public void CopyFromEdgeSave(SaveEdgeTile tileToCopy)
+    {
+        transform.localScale = new Vector3(1, 1, 0);
+        transform.localPosition = new Vector2(0, 0);
+
+        colorArrayNumber = tileToCopy.colorArrayNumber;
+        if (colorArrayNumber >= 0 ) //this only really needs to be here while you can save edge tiles without a colour
+        {
+            thisAttributeRenderer.color = new Color(GameBoard.instance.possibleColours[colorArrayNumber].r / 255f, GameBoard.instance.possibleColours[colorArrayNumber].g / 255f, GameBoard.instance.possibleColours[colorArrayNumber].b / 255, 1);
+        }
+
+        foreach (Sprite sprite in GameBoard.instance.possibleEdgeAttributes)
+        {
+            if (sprite.name == tileToCopy.type) {
+                thisAttributeRenderer.sprite = sprite;
+            }
+        }
+        type = tileToCopy.type;
+        colorArrayNumber = tileToCopy.colorArrayNumber;
+    }
+
+    public void CopyFromGameSave(SaveGameTile tileToCopy)
+    {
+        transform.localScale = new Vector3(1, 1, 0);
+        transform.localPosition = new Vector2(0, 0);
+
+        colorArrayNumber = tileToCopy.colorArrayNumber;
+        if (colorArrayNumber >= 0) //this only really needs to be here while you can save edge tiles without a colour
+        {
+            thisAttributeRenderer.color = new Color(GameBoard.instance.possibleColours[colorArrayNumber].r / 255f, GameBoard.instance.possibleColours[colorArrayNumber].g / 255f, GameBoard.instance.possibleColours[colorArrayNumber].b / 255, 1);
+        }
+
+        foreach (Sprite sprite in GameBoard.instance.possibleAttributes)
+        {
+            if (sprite.name == tileToCopy.type)
+            {
+                thisAttributeRenderer.sprite = sprite;
+            }
+        }
+        type = tileToCopy.type;
+        rotation = tileToCopy.rotation;
+        InitialRotate();
+        colorArrayNumber = tileToCopy.colorArrayNumber;
     }
 
     public void Copy(TileAttribute tileToCopy)
@@ -88,6 +132,11 @@ public class TileAttribute : MonoBehaviour
     {
         rotation = rotation + 90;
         transform.Rotate(0, 0, -90);
+    }
+
+    private void InitialRotate()
+    {
+        transform.Rotate(0, 0, -rotation);
     }
 
     public void RotateToFaceCenter(Vector2 position)

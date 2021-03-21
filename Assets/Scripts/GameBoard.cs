@@ -1,9 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameBoard : MonoBehaviour
 {
+
+    string filename;
+
     public GameObject puzzleGameBoard;
     public GameObject palette;
     public GameObject edgePalette;
@@ -30,6 +39,9 @@ public class GameBoard : MonoBehaviour
     public TileAttribute selectedTile;
     public TileAttribute selectedEdgeTile;
 
+    public SaveBoardObject saveBoard;
+    public Button button;
+
     public static GameBoard instance; //A reference to our game control script so we can access it statically.
 
     void Awake()
@@ -46,6 +58,10 @@ public class GameBoard : MonoBehaviour
     void Start()
     {
         //This will hold all of the information on what should go on the screen
+        filename = Application.persistentDataPath + "/LevelData.dat";
+
+        loadBoardFromFile();
+
 
         //create all of the possible colours:
         possibleColours = new Color[5] {
@@ -93,8 +109,6 @@ public class GameBoard : MonoBehaviour
                 {
                     tile.InitialiseForPuzzleGameBoard(new Vector2(i,j));
                 }
-                //Debug.Log("Tile Height : " + tiles[i,j].transform.localScale.x);
-
             } 
         }
         
@@ -114,6 +128,15 @@ public class GameBoard : MonoBehaviour
             }
         }
 
+        //fill the board based on the level that was loaded:
+        if (saveBoard.boardLength != 0)
+        {
+            loadBoardTilesOntoBoard();
+        }
+
+
+        button.GetComponent<Button>().onClick.AddListener(saveBoardToFile);
+
     }
 
     // Update is called once per frame
@@ -123,6 +146,142 @@ public class GameBoard : MonoBehaviour
     }
 
 
+    public void saveBoardToFile()
+    {
 
+        saveBoard = new SaveBoardObject(tileRowColumns);
+
+        //saves the edge tiles:
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < tileRowColumns; j++)
+            {
+                var currentTile = edgeTiles[i, j].GetComponent<EdgeTile>();
+                if (currentTile.edgeTileAttribute)
+                {
+                    var currentAttribute = currentTile.edgeTileAttribute.GetComponent<TileAttribute>();
+                    if (currentAttribute)
+                    {
+                        Debug.Log(currentAttribute.name);
+                        var saveEdgeTile = new SaveEdgeTile();
+                        /*
+                        public int side; //side is which of the strips it will fall into (top, left, right, bottom)
+                        public int index; //index is which index of that row it will fall into
+
+                        public string type;
+                        public int colorArrayNumber = -1; //no colour
+                        */
+                        saveEdgeTile.side = currentTile.side;
+                        saveEdgeTile.index = currentTile.index;
+
+                        saveEdgeTile.type = currentAttribute.type;
+                        saveEdgeTile.colorArrayNumber = currentAttribute.colorArrayNumber;
+
+                        saveBoard.edgeTiles.Add(saveEdgeTile);
+                    }
+                }
+            }
+        }
+
+        //saves the game tiles:
+        for (int i = 0; i < tileRowColumns; i++)
+        {
+            for (int j = 0; j < tileRowColumns; j++)
+            {
+                var currentTile = tiles[i, j].GetComponent<Tile>();
+                if (currentTile.tileAttribute)
+                {
+                    var currentAttribute = currentTile.tileAttribute.GetComponent<TileAttribute>();
+                    if (currentAttribute)
+                    {
+                        Debug.Log(currentAttribute.name);
+                        var saveGameTile = new SaveGameTile();
+                        /*
+                        positionX;
+                        public int positionY;
+
+                        public string type;
+                        public int rotation = 0;
+                        public int colorArrayNumber = -1; //no colour
+                        public bool isLocked
+                        */
+                        saveGameTile.positionX = (int)currentTile.position.x;
+                        saveGameTile.positionY = (int)currentTile.position.y;
+
+                        saveGameTile.type = currentAttribute.type;
+                        saveGameTile.colorArrayNumber = currentAttribute.colorArrayNumber;
+                        saveGameTile.rotation = currentAttribute.rotation;
+                        saveGameTile.isLocked = false;
+
+                        saveBoard.gameTiles.Add(saveGameTile);
+                    }
+                }
+            }
+        }
+
+        // Create an instance of the XmlSerializer class;
+        // specify the type of object to serialize.
+        XmlSerializer serializer = new XmlSerializer(typeof(SaveBoardObject));
+        TextWriter writer = new StreamWriter(filename);
+
+        // Serialize the purchase order, and close the TextWriter.
+        serializer.Serialize(writer, saveBoard);
+        writer.Close();
+    }
+
+    public void loadBoardFromFile()
+    {
+        //test read:
+        if (File.Exists(filename))
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(SaveBoardObject));
+            FileStream fs = new FileStream(filename, FileMode.Open);
+
+            saveBoard = (SaveBoardObject)serializer.Deserialize(fs);
+            Debug.Log("Game data loaded!");
+
+            tileRowColumns = saveBoard.boardLength;
+        }
+        else { 
+            Debug.LogError("There is no save data!");
+            //loadBoardFresh
+        }
+    }
+
+
+    public void loadBoardTilesOntoBoard()
+    {
+        //load edge tiles in
+        for (int i = 0; i < saveBoard.edgeTiles.Count; i++)
+        {
+            var edgeTileToAdd = saveBoard.edgeTiles[i];
+
+            edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().edgeTileAttribute = (GameObject)Instantiate(edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().transform);
+            var attributeTile = edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().edgeTileAttribute.GetComponent<TileAttribute>();
+            if (attributeTile)
+            {
+                attributeTile.CopyFromEdgeSave(edgeTileToAdd);
+                attributeTile.RotateToFaceCenter(edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().position);
+            }
+
+            edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().spriteRenderer.sprite = edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().mySecondSprite;
+        }
+
+        //load game tiles in
+        for (int i = 0; i < saveBoard.gameTiles.Count; i++)
+        {
+            var gameTileToAdd = saveBoard.gameTiles[i];
+
+            tiles[gameTileToAdd.positionX, gameTileToAdd.positionY].GetComponent<Tile>().tileAttribute = (GameObject)Instantiate(tiles[gameTileToAdd.positionX, gameTileToAdd.positionY].GetComponent<Tile>().tileAttributePrefab, new Vector2(0, 0), Quaternion.identity, tiles[gameTileToAdd.positionX, gameTileToAdd.positionY].GetComponent<Tile>().transform);
+            var attributeTile = tiles[gameTileToAdd.positionX, gameTileToAdd.positionY].GetComponent<Tile>().tileAttribute.GetComponent<TileAttribute>();
+            if (attributeTile)
+            {
+                attributeTile.CopyFromGameSave(gameTileToAdd);
+            }
+
+            tiles[gameTileToAdd.positionX, gameTileToAdd.positionY].GetComponent<Tile>().spriteRenderer.sprite = tiles[gameTileToAdd.positionX, gameTileToAdd.positionY].GetComponent<Tile>().mySecondSprite;
+        }
+
+    }
 
 }
