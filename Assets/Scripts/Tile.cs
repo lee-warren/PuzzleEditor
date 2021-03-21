@@ -12,7 +12,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public GameObject tileAttributePrefab;
     public GameObject tileAttribute;
 
-    SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     public Sprite myFirstSprite;
     public Sprite mySecondSprite;
 
@@ -36,7 +36,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 
         PositionTileForPuzzleGameBoard();
         //thisTile.transform.position = new Vector3(position.x, position.y, 0);
-        print(position.x + "," + position.y);
     }
 
     public void InitialiseForPalette(int column, Sprite attributeSprite)
@@ -113,8 +112,6 @@ private void PositionTileForPuzzleGameBoard() {//sketchy AF... be carefull chang
 
         RectTransform parentsRect = thisRectTransform.parent.GetComponent<RectTransform>();
         Vector2 bottomLeftCorner = new Vector2(- parentsRect.sizeDelta.x/2, - parentsRect.sizeDelta.y/2);
-        print(bottomLeftCorner);
-        print(thisRectTransform.sizeDelta.x);
 
         //sets size of the square relevant to the parents size
         transform.localScale = new Vector3((1 - 1*spacing)/(float)(GameBoard.instance.tileRowColumns + 2) - spacing,(1 - 1*spacing)/(float)(GameBoard.instance.tileRowColumns + 2) - spacing,0);
@@ -127,8 +124,6 @@ private void PositionTileForPuzzleGameBoard() {//sketchy AF... be carefull chang
     {
         RectTransform parentsRect = thisRectTransform.parent.GetComponent<RectTransform>();
         Vector2 bottomLeftCorner = new Vector2(-parentsRect.sizeDelta.x / 2, -parentsRect.sizeDelta.y / 2);
-        print(bottomLeftCorner);
-        print(thisRectTransform.sizeDelta.x);
 
         //sets size of the square relevant to the parents size
         transform.localScale = new Vector3((((1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing)) * parentsRect.sizeDelta.y / parentsRect.sizeDelta.x, (1 - 1 * spacing) / (float)(GameBoard.instance.tileRowColumns + 2) - spacing, 0);
