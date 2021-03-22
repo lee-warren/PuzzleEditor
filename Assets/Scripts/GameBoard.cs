@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameBoard : MonoBehaviour
@@ -58,7 +59,7 @@ public class GameBoard : MonoBehaviour
     void Start()
     {
         //This will hold all of the information on what should go on the screen
-        filename = Application.persistentDataPath + "/LevelData.dat";
+        filename = PlayerPrefs.GetString("levelName");
 
         loadBoardFromFile();
 
@@ -227,6 +228,13 @@ public class GameBoard : MonoBehaviour
         // Serialize the purchase order, and close the TextWriter.
         serializer.Serialize(writer, saveBoard);
         writer.Close();
+
+        ReturnToMenu();
+    }
+
+    void ReturnToMenu()
+    {
+        SceneManager.LoadScene("Scenes/LevelSelect");
     }
 
     public void loadBoardFromFile()

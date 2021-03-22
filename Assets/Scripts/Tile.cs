@@ -108,7 +108,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         }
     }
 
-private void PositionTileForPuzzleGameBoard() {//sketchy AF... be carefull changing anything in here
+    private void PositionTileForPuzzleGameBoard() {//sketchy AF... be carefull changing anything in here
 
         RectTransform parentsRect = thisRectTransform.parent.GetComponent<RectTransform>();
         Vector2 bottomLeftCorner = new Vector2(- parentsRect.sizeDelta.x/2, - parentsRect.sizeDelta.y/2);
