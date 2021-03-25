@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class WorldSelectTile : MonoBehaviour, IPointerClickHandler
 {
@@ -11,8 +10,6 @@ public class WorldSelectTile : MonoBehaviour, IPointerClickHandler
     RectTransform thisRectTransform;
 
     public Sprite plusImage;
-
-    public Text worldNumberText;
 
     public Vector2 position;
     public string worldName;
@@ -42,7 +39,6 @@ public class WorldSelectTile : MonoBehaviour, IPointerClickHandler
         position = new Vector2(index % 5, (index / 5));
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         worldName = thisWorldName;
-        worldNumberText.text = "" + (index + 1);
 
         PositionTileForWorldSelector();
     }
