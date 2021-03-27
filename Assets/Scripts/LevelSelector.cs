@@ -123,7 +123,7 @@ public class LevelSelector : MonoBehaviour
             var tile = levelTiles[levelNames.Length].GetComponent<LevelSelectTile>();
             if (tile)
             {
-                tile.InitialiseForAddLevelButton(levelNames.Length, worldName);
+                tile.InitialiseForAddLevelButton(levelNames.Length, Application.persistentDataPath + "/Levels/" + worldName);
             }
         }
     }

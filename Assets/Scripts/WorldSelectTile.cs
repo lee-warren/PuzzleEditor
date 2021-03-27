@@ -73,7 +73,7 @@ public class WorldSelectTile : MonoBehaviour, IPointerClickHandler
         transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2f) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.x * (spacing + transform.localScale.y / 2f) + (2 - position.y) * parentsRect.sizeDelta.x * (spacing + transform.localScale.y));
     }
 
-    public void OnPointerClick(PointerEventData eventData) // 3
+    public void OnPointerClick(PointerEventData eventData)
     {
         if (isNewWorld)
         {
