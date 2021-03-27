@@ -11,15 +11,32 @@ using UnityEngine.UI;
 
 public class GameBoard : MonoBehaviour
 {
-
+    //general components
     string filename;
+    public SaveBoardObject saveBoard;
+    public int tileRows;
+    public int tileColumns;
+
+    public float tileSpacing = 0.1f;
+
+    public InputField enteredHeigthInput;
+    public InputField enteredWidthInput;
+    public Color[] possibleColours;
+    //
+
+    //Config Page stuff
+    public Canvas levelConifgOptionsCanvas;
+
+    public Button saveConfigButton;
+    //
+
+    //Game Board stuff
+    public Canvas gameBoardCanvas;
 
     public GameObject puzzleGameBoard;
     public GameObject palette;
     public GameObject edgePalette;
 
-    public int tileRowColumns = 1;
-    public float tileSpacing = 0.1f;
     public Vector2 distanceFromCenterToEdge;
     public Vector2 screenSize;
     public Vector2 bottomLeftCorner;
@@ -32,16 +49,15 @@ public class GameBoard : MonoBehaviour
 
     public GameObject edgeTilePrefab;
     public Sprite[] possibleEdgeAttributes;
-    public GameObject[,] edgeTiles;
+    public GameObject[][] edgeTiles;
     public GameObject[] edgePaletteTiles;
-
-    public Color[] possibleColours;
 
     public TileAttribute selectedTile;
     public TileAttribute selectedEdgeTile;
 
-    public SaveBoardObject saveBoard;
-    public Button button;
+    public Button exportLevelButton;
+    public Button changeConfigButton;
+    //
 
     public static GameBoard instance; //A reference to our game control script so we can access it statically.
 
@@ -63,6 +79,18 @@ public class GameBoard : MonoBehaviour
 
         loadBoardFromFile();
 
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public void loadEmptyBoard()
+    {
+        levelConifgOptionsCanvas.gameObject.SetActive(false);
+        gameBoardCanvas.gameObject.SetActive(true);
 
         //create all of the possible colours:
         possibleColours = new Color[5] {
@@ -72,6 +100,20 @@ public class GameBoard : MonoBehaviour
             new Color(99, 228, 247, 97),
             new Color(154, 240, 137, 94)
             };
+
+        //destroy any existing children of the palette, edge palette and game board
+        foreach (Transform child in palette.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        foreach (Transform child in edgePalette.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        foreach (Transform child in puzzleGameBoard.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
 
         //initialise the pallete, and all of the squares to go in there
         paletteTiles = new GameObject[possibleAttributes.Length];
@@ -99,29 +141,34 @@ public class GameBoard : MonoBehaviour
         }
 
         //initialise all of the empty squares from the tile prefab to go in the game board:
-        tiles = new GameObject[tileRowColumns,tileRowColumns];
-        for (int i =0; i< tileRowColumns; i++)
+        tiles = new GameObject[tileRows, tileColumns];
+        for (int i = 0; i < tileRows; i++)
         {
-            for (int j =0; j< tileRowColumns; j++)
+            for (int j = 0; j < tileColumns; j++)
             {
-                tiles[i,j] = (GameObject)Instantiate(tilePrefab, new Vector2(0,0), Quaternion.identity, puzzleGameBoard.transform);
-                var tile = tiles[i,j].GetComponent<Tile>();
-                if(tile)
+                tiles[i, j] = (GameObject)Instantiate(tilePrefab, new Vector2(0, 0), Quaternion.identity, puzzleGameBoard.transform);
+                var tile = tiles[i, j].GetComponent<Tile>();
+                if (tile)
                 {
-                    tile.InitialiseForPuzzleGameBoard(new Vector2(i,j));
+                    tile.InitialiseForPuzzleGameBoard(new Vector2(i, j));
                 }
-            } 
+            }
         }
-        
+
 
         //create all the empty squares for the edge tiles:
-        edgeTiles = new GameObject[4, tileRowColumns];
+        edgeTiles = new GameObject[4][];
+        edgeTiles[0] = new GameObject[tileRows]; //top
+        edgeTiles[1] = new GameObject[tileColumns]; //left
+        edgeTiles[2] = new GameObject[tileColumns]; //right
+        edgeTiles[3] = new GameObject[tileRows]; //bottom
+
         for (int i = 0; i < 4; i++)
         {
-            for (int j = 0; j < tileRowColumns; j++)
+            for (int j = 0; j < edgeTiles[i].Length; j++)
             {
-                edgeTiles[i, j] = (GameObject)Instantiate(edgeTilePrefab, new Vector2(0, 0), Quaternion.identity, puzzleGameBoard.transform);
-                var tile = edgeTiles[i, j].GetComponent<EdgeTile>();
+                edgeTiles[i][j] = (GameObject)Instantiate(edgeTilePrefab, new Vector2(0, 0), Quaternion.identity, puzzleGameBoard.transform);
+                var tile = edgeTiles[i][j].GetComponent<EdgeTile>();
                 if (tile)
                 {
                     tile.InitialiseForPuzzleGameBoard(i, j);
@@ -129,35 +176,21 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-        //fill the board based on the level that was loaded:
-        if (saveBoard.boardLength != 0)
-        {
-            loadBoardTilesOntoBoard();
-        }
-
-
-        button.GetComponent<Button>().onClick.AddListener(saveBoardToFile);
-
+        exportLevelButton.GetComponent<Button>().onClick.AddListener(saveBoardToFile);
+        changeConfigButton.GetComponent<Button>().onClick.AddListener(ShowConfigOptions);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 
     public void saveBoardToFile()
     {
 
-        saveBoard = new SaveBoardObject(tileRowColumns);
+        saveBoard = new SaveBoardObject(tileRows, tileColumns);
 
         //saves the edge tiles:
         for (int i = 0; i < 4; i++)
         {
-            for (int j = 0; j < tileRowColumns; j++)
+            for (int j = 0; j < edgeTiles[i].Length; j++)
             {
-                var currentTile = edgeTiles[i, j].GetComponent<EdgeTile>();
+                var currentTile = edgeTiles[i][j].GetComponent<EdgeTile>();
                 if (currentTile.edgeTileAttribute)
                 {
                     var currentAttribute = currentTile.edgeTileAttribute.GetComponent<TileAttribute>();
@@ -185,9 +218,9 @@ public class GameBoard : MonoBehaviour
         }
 
         //saves the game tiles:
-        for (int i = 0; i < tileRowColumns; i++)
+        for (int i = 0; i < tileRows; i++)
         {
-            for (int j = 0; j < tileRowColumns; j++)
+            for (int j = 0; j < tileColumns; j++)
             {
                 var currentTile = tiles[i, j].GetComponent<Tile>();
                 if (currentTile.tileAttribute)
@@ -242,13 +275,33 @@ public class GameBoard : MonoBehaviour
         //test read:
         if (File.Exists(filename))
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(SaveBoardObject));
-            FileStream fs = new FileStream(filename, FileMode.Open);
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(SaveBoardObject));
+                FileStream fs = new FileStream(filename, FileMode.Open);
 
-            saveBoard = (SaveBoardObject)serializer.Deserialize(fs);
-            Debug.Log("Game data loaded!");
+                saveBoard = (SaveBoardObject)serializer.Deserialize(fs);
+                Debug.Log("Game data loaded!");
 
-            tileRowColumns = saveBoard.boardLength;
+                if (saveBoard.boardHeight > 0 && saveBoard.boardWidth > 0)
+                {
+                    tileRows = saveBoard.boardWidth;
+                    tileColumns = saveBoard.boardHeight;
+
+                    loadEmptyBoard();
+
+                    loadBoardTilesOntoBoard();
+                }
+                else
+                {
+                    ShowConfigOptions();
+                }
+            }
+            catch
+            {
+                ShowConfigOptions();
+            }
+            
         }
         else { 
             Debug.LogError("There is no save data!");
@@ -256,6 +309,24 @@ public class GameBoard : MonoBehaviour
         }
     }
 
+    public void ShowConfigOptions()
+    {
+        gameBoardCanvas.gameObject.SetActive(false);
+        levelConifgOptionsCanvas.gameObject.SetActive(true);
+
+        saveConfigButton.GetComponent<Button>().onClick.AddListener(SaveConfigOptions);
+    }
+
+    public void SaveConfigOptions()
+    {
+        tileRows = int.Parse(enteredHeigthInput.text);
+        tileColumns = int.Parse(enteredWidthInput.text);
+
+        enteredHeigthInput.text = "";
+        enteredWidthInput.text = "";
+
+        loadEmptyBoard();
+    }
 
     public void loadBoardTilesOntoBoard()
     {
@@ -264,15 +335,15 @@ public class GameBoard : MonoBehaviour
         {
             var edgeTileToAdd = saveBoard.edgeTiles[i];
 
-            edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().edgeTileAttribute = (GameObject)Instantiate(edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().transform);
-            var attributeTile = edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().edgeTileAttribute.GetComponent<TileAttribute>();
+            edgeTiles[edgeTileToAdd.side][edgeTileToAdd.index].GetComponent<EdgeTile>().edgeTileAttribute = (GameObject)Instantiate(edgeTiles[edgeTileToAdd.side][edgeTileToAdd.index].GetComponent<EdgeTile>().edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, edgeTiles[edgeTileToAdd.side][edgeTileToAdd.index].GetComponent<EdgeTile>().transform);
+            var attributeTile = edgeTiles[edgeTileToAdd.side][edgeTileToAdd.index].GetComponent<EdgeTile>().edgeTileAttribute.GetComponent<TileAttribute>();
             if (attributeTile)
             {
                 attributeTile.CopyFromEdgeSave(edgeTileToAdd);
-                attributeTile.RotateToFaceCenter(edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().position);
+                attributeTile.RotateToFaceCenter(edgeTiles[edgeTileToAdd.side][edgeTileToAdd.index].GetComponent<EdgeTile>().position);
             }
 
-            edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().spriteRenderer.sprite = edgeTiles[edgeTileToAdd.side, edgeTileToAdd.index].GetComponent<EdgeTile>().mySecondSprite;
+            edgeTiles[edgeTileToAdd.side][edgeTileToAdd.index].GetComponent<EdgeTile>().spriteRenderer.sprite = edgeTiles[edgeTileToAdd.side][edgeTileToAdd.index].GetComponent<EdgeTile>().mySecondSprite;
         }
 
         //load game tiles in

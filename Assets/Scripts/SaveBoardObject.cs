@@ -6,7 +6,8 @@ using UnityEngine;
 [Serializable]
 public class SaveBoardObject
 {
-    public int boardLength;
+    public int boardHeight;
+    public int boardWidth;
 
     public List<SaveEdgeTile> edgeTiles;
     public List<SaveGameTile> gameTiles;
@@ -16,9 +17,11 @@ public class SaveBoardObject
     {
     }
 
-    public SaveBoardObject(int boardLength)
+    public SaveBoardObject(int boardWidth, int boardHeight)
     {
-        this.boardLength = boardLength;
+        this.boardHeight = boardHeight;
+        this.boardWidth = boardWidth;
+
         this.edgeTiles = new List<SaveEdgeTile>();
 
         this.gameTiles = new List<SaveGameTile>();
