@@ -20,6 +20,7 @@ public class LevelSelector : MonoBehaviour
     public GameObject levelSelectBoard;
     public Button returnToWorldsButton;
     public GameObject[] levelTiles;
+    public Text worldNameTitle;
 
     string[] levelNames;
 
@@ -56,6 +57,12 @@ public class LevelSelector : MonoBehaviour
 
         worldNames = Directory.GetDirectories(Application.persistentDataPath + "/Levels/");
 
+        //destroy any existing children of the world board
+        foreach (Transform child in worldSelectBoard.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
         //initialise the world tiles
         worldTiles = new GameObject[worldNames.Length + 1];
         for (int j = 0; j < worldNames.Length; j++)
@@ -64,7 +71,7 @@ public class LevelSelector : MonoBehaviour
             var tile = worldTiles[j].GetComponent<WorldSelectTile>();
             if (tile)
             {
-                tile.InitialiseForWorlds(j, worldNames[j]);
+                tile.InitialiseForWorlds(j, new DirectoryInfo(worldNames[j]).Name);
             }
         }
         //create 'add new level' button
@@ -74,7 +81,7 @@ public class LevelSelector : MonoBehaviour
             var tile = worldTiles[worldNames.Length].GetComponent<WorldSelectTile>();
             if (tile)
             {
-                tile.InitialiseForAddWorldButton(worldNames.Length, Application.persistentDataPath + "/Levels/");
+                tile.InitialiseForAddWorldButton(worldNames.Length);
             }
         }
     }
@@ -83,12 +90,20 @@ public class LevelSelector : MonoBehaviour
     {
         //Note: worldName is taking the whole file path for the world at the moment, not just the world name specifically
 
+        worldNameTitle.text = "World " + worldName;
+
         worldSelectScreen.SetActive(false);
         levelSelectScreen.SetActive(true);
 
-        levelNames = Directory.GetFiles(worldName);
+        levelNames = Directory.GetFiles(Application.persistentDataPath + "/Levels/" + worldName);
 
         returnToWorldsButton.GetComponent<Button>().onClick.AddListener(ReturnToWorldSelect);
+
+        //destroy any existing children of the level board
+        foreach (Transform child in levelSelectBoard.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
 
         //initialise the level tiles
         levelTiles = new GameObject[levelNames.Length + 1];

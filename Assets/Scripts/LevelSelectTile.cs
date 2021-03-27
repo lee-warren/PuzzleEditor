@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class LevelSelectTile : MonoBehaviour, IPointerClickHandler
 {
@@ -11,6 +12,8 @@ public class LevelSelectTile : MonoBehaviour, IPointerClickHandler
     RectTransform thisRectTransform;
 
     public Sprite plusImage;
+
+    public Text levelNumberText;
 
     public Vector2 position;
     public string levelName;
@@ -40,6 +43,8 @@ public class LevelSelectTile : MonoBehaviour, IPointerClickHandler
         position = new Vector2(index%5, (index/5));
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
         levelName = thisLevelName;
+        levelNumberText.text = "" + (index + 1);
+
 
         PositionTileForLevelSelector();
     }

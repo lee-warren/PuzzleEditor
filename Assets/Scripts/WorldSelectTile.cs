@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class WorldSelectTile : MonoBehaviour, IPointerClickHandler
 {
@@ -13,6 +14,7 @@ public class WorldSelectTile : MonoBehaviour, IPointerClickHandler
 
     public Vector2 position;
     public string worldName;
+    public Text worldNumberText;
     public bool isNewWorld = false;
 
     private float spacing = 1f / 100f;
@@ -38,17 +40,18 @@ public class WorldSelectTile : MonoBehaviour, IPointerClickHandler
     {
         position = new Vector2(index % 5, (index / 5));
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        worldName = thisWorldName;
+        worldName = thisWorldName; //(index + 1).ToString();
+        worldNumberText.text = worldName;
 
         PositionTileForWorldSelector();
     }
 
-    public void InitialiseForAddWorldButton(int index, string thisWorldNamePrefix)
+    public void InitialiseForAddWorldButton(int index)
     {
         position = new Vector2(index % 5, (index / 5));
         spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
-        worldName = thisWorldNamePrefix + (index + 1);
+        worldName = (index + 1).ToString();
 
         PositionTileForWorldSelector();
 
@@ -75,7 +78,7 @@ public class WorldSelectTile : MonoBehaviour, IPointerClickHandler
         if (isNewWorld)
         {
             //create the world
-            System.IO.Directory.CreateDirectory(worldName);
+            System.IO.Directory.CreateDirectory(Application.persistentDataPath + "/Levels/" + worldName);
 
         }
         LevelSelector.instance.LoadLevelScreen(worldName);
