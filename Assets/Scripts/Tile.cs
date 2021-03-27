@@ -63,6 +63,12 @@ public class Tile : MonoBehaviour, IPointerClickHandler
         {
             if (GameBoard.instance.selectedTile)
             {
+                bool justRemove = false;
+                if (tileAttribute && tileAttribute.GetComponent<TileAttribute>().type == GameBoard.instance.selectedTile.type)
+                {
+                    justRemove = true;
+                }
+
                 if (transform.childCount >= 1) //kills all existing children to make way for the new attribute
                 {
                     foreach (Transform child in transform)
@@ -70,14 +76,20 @@ public class Tile : MonoBehaviour, IPointerClickHandler
                         GameObject.Destroy(child.gameObject);
                     }
                 }
-                tileAttribute = (GameObject)Instantiate(tileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
-                var attributeTile = tileAttribute.GetComponent<TileAttribute>();
-                if (attributeTile)
+                if (justRemove)
                 {
-                    attributeTile.Copy(GameBoard.instance.selectedTile);
+                    spriteRenderer.sprite = myFirstSprite;
                 }
+                else {
+                    tileAttribute = (GameObject)Instantiate(tileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
+                    var attributeTile = tileAttribute.GetComponent<TileAttribute>();
+                    if (attributeTile)
+                    {
+                        attributeTile.Copy(GameBoard.instance.selectedTile);
+                    }
 
-                spriteRenderer.sprite = mySecondSprite;
+                    spriteRenderer.sprite = mySecondSprite;
+                }
             }
             else // no tile in the palette is selected
             {
