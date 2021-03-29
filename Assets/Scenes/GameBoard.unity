@@ -958,12 +958,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: edc09f428f8d5bc4e84c2e773e13331e, type: 3}
   - {fileID: 21300000, guid: e14208d491e36304794871ddc5953583, type: 3}
   - {fileID: 21300000, guid: b9fa55336c30b7940a7eebe4605252cd, type: 3}
+  - {fileID: 21300000, guid: 557f646d15dfe914e925a28dba1b3e49, type: 3}
+  - {fileID: 21300000, guid: e51a3d862ea3f59408f92ae2efe74c14, type: 3}
   paletteTiles: []
   edgeTilePrefab: {fileID: 4607835838335386728, guid: ab0cf963960666f47b7bde7082ed8544,
     type: 3}
   possibleEdgeAttributes:
   - {fileID: 21300000, guid: a4a322eab8646fe45903c43e3f37839b, type: 3}
   - {fileID: 21300000, guid: 599301af3e3066c4794e0ed6ccf617f7, type: 3}
+  - {fileID: 21300000, guid: a6df17698688c21499b632170e74f177, type: 3}
   edgePaletteTiles: []
   selectedTile: {fileID: 0}
   selectedEdgeTile: {fileID: 0}
