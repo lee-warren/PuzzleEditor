@@ -87,6 +87,12 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         {
             if (GameBoard.instance.selectedEdgeTile)
             {
+                bool justRemove = false;
+                if (edgeTileAttribute && edgeTileAttribute.GetComponent<TileAttribute>().type == GameBoard.instance.selectedEdgeTile.type)
+                {
+                    justRemove = true;
+                }
+
                 if (transform.childCount >= 1) //kills all existing children to make way for the new attribute
                 {
                     foreach (Transform child in transform)
@@ -94,15 +100,23 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
                         GameObject.Destroy(child.gameObject);
                     }
                 }
-                edgeTileAttribute = (GameObject)Instantiate(edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
-                var attributeTile = edgeTileAttribute.GetComponent<TileAttribute>();
-                if (attributeTile)
-                {
-                    attributeTile.Copy(GameBoard.instance.selectedEdgeTile);
-                    attributeTile.RotateToFaceCenter(position);
-                }
 
-                spriteRenderer.sprite = mySecondSprite;
+                if (justRemove)
+                {
+                    spriteRenderer.sprite = myFirstSprite;
+                }
+                else
+                {
+                    edgeTileAttribute = (GameObject)Instantiate(edgeTileAttributePrefab, new Vector2(0, 0), Quaternion.identity, transform);
+                    var attributeTile = edgeTileAttribute.GetComponent<TileAttribute>();
+                    if (attributeTile)
+                    {
+                        attributeTile.Copy(GameBoard.instance.selectedEdgeTile);
+                        attributeTile.RotateToFaceCenter(position);
+                    }
+
+                    spriteRenderer.sprite = mySecondSprite;
+                }
             }
             else // no tile in the palette is selected
             {

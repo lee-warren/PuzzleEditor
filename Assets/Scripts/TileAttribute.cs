@@ -107,13 +107,17 @@ public class TileAttribute : MonoBehaviour
 
     public void ShouldTransform()
     {
-        if (type == "Filter" || type == "LightEmitter" || type == "LightReceiver")
+        if (type == "Filter" || type == "Star"  || type == "LightEmitter" || type == "LightReceiver" || type == "LightReceiverStar")
         {
             CycleColours();
         }
-        else
+        else if (type == "Reflector" || type == "Refractor" )
         {
             Rotate();
+        }
+        else 
+        {
+            //do nothing
         }
     }
 
