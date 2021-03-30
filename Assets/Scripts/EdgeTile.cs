@@ -40,7 +40,7 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         isBoardEdgeTile = true;
         if (side == 0)// top
         {
-            position = new Vector2(index + 1, GameBoard.instance.tileColumns + 1);
+            position = new Vector2(index + 1, GameBoard.instance.tileRows + 1);
         }
         else if (side == 1)// left
         {
@@ -48,7 +48,7 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         }
         else if (side == 2)// right
         {
-            position = new Vector2(GameBoard.instance.tileRows + 1, index + 1);
+            position = new Vector2(GameBoard.instance.tileColumns + 1, index + 1);
         }
         else if (side == 3)// bottom
         {
@@ -154,9 +154,18 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         Vector2 bottomLeftCorner = new Vector2(-parentsRect.sizeDelta.x / 2, -parentsRect.sizeDelta.y / 2);
 
         //sets size of the square relevant to the parents size
-        transform.localScale = new Vector3((1 - 1 * spacing) / (float)(GameBoard.instance.tileRows + 2) - spacing, (1 - 1 * spacing) / (float)(GameBoard.instance.tileColumns + 2) - spacing, 0);
+        if (GameBoard.instance.tileColumns > GameBoard.instance.tileRows)
+        {
+            transform.localScale = new Vector3((1 - 1 * spacing) / (float)(GameBoard.instance.tileColumns + 2) - spacing, (1 - 1 * spacing) / (float)(GameBoard.instance.tileColumns + 2) - spacing, 0);
+        }
+        else
+        {
+            transform.localScale = new Vector3((1 - 1 * spacing) / (float)(GameBoard.instance.tileRows + 2) - spacing, (1 - 1 * spacing) / (float)(GameBoard.instance.tileRows + 2) - spacing, 0);
+        }
 
-        transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + position.y * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
+        Vector2 fakeBottomLeftCorner = new Vector2(-parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) - ((float)(GameBoard.instance.tileColumns + 1) / 2.0f) * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), -parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) - ((float)(GameBoard.instance.tileRows + 1) / 2.0f) * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
+
+        transform.localPosition = new Vector2(fakeBottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), fakeBottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + position.y * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
     }
 
     private void PositionEdgeTileForPalette()
@@ -165,9 +174,16 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
         Vector2 bottomLeftCorner = new Vector2(-parentsRect.sizeDelta.x / 2, -parentsRect.sizeDelta.y / 2);
 
         //sets size of the square relevant to the parents size
-        transform.localScale = new Vector3((((1 - 1 * spacing) / (float)(GameBoard.instance.tileRows + 2) - spacing))* parentsRect.sizeDelta.y/ parentsRect.sizeDelta.x, (1 - 1 * spacing) / (float)(GameBoard.instance.tileColumns + 2) - spacing, 0);
-
-        transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + (GameBoard.instance.tileColumns + 1 - position.y) * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
+        if (GameBoard.instance.tileColumns > GameBoard.instance.tileRows)
+        {
+            transform.localScale = new Vector3((((1 - 1 * spacing) / (float)(GameBoard.instance.tileColumns + 2) - spacing)) * parentsRect.sizeDelta.y / parentsRect.sizeDelta.x, (1 - 1 * spacing) / (float)(GameBoard.instance.tileColumns + 2) - spacing, 0);
+            transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + (GameBoard.instance.tileColumns + 1 - position.y) * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
+        }
+        else
+        {
+            transform.localScale = new Vector3((((1 - 1 * spacing) / (float)(GameBoard.instance.tileRows + 2) - spacing)) * parentsRect.sizeDelta.y / parentsRect.sizeDelta.x, (1 - 1 * spacing) / (float)(GameBoard.instance.tileRows + 2) - spacing, 0);
+            transform.localPosition = new Vector2(bottomLeftCorner.x + parentsRect.sizeDelta.x * (spacing + transform.localScale.x / 2) + position.x * parentsRect.sizeDelta.x * (spacing + transform.localScale.x), bottomLeftCorner.y + parentsRect.sizeDelta.y * (spacing + transform.localScale.y / 2) + (GameBoard.instance.tileRows + 1 - position.y) * parentsRect.sizeDelta.y * (spacing + transform.localScale.y));
+        }
     }
 
     // Update is called once per frame

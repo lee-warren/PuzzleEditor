@@ -141,10 +141,10 @@ public class GameBoard : MonoBehaviour
         }
 
         //initialise all of the empty squares from the tile prefab to go in the game board:
-        tiles = new GameObject[tileRows, tileColumns];
-        for (int i = 0; i < tileRows; i++)
+        tiles = new GameObject[tileColumns, tileRows];
+        for (int i = 0; i < tileColumns; i++)
         {
-            for (int j = 0; j < tileColumns; j++)
+            for (int j = 0; j < tileRows; j++)
             {
                 tiles[i, j] = (GameObject)Instantiate(tilePrefab, new Vector2(0, 0), Quaternion.identity, puzzleGameBoard.transform);
                 var tile = tiles[i, j].GetComponent<Tile>();
@@ -158,10 +158,10 @@ public class GameBoard : MonoBehaviour
 
         //create all the empty squares for the edge tiles:
         edgeTiles = new GameObject[4][];
-        edgeTiles[0] = new GameObject[tileRows]; //top
-        edgeTiles[1] = new GameObject[tileColumns]; //left
-        edgeTiles[2] = new GameObject[tileColumns]; //right
-        edgeTiles[3] = new GameObject[tileRows]; //bottom
+        edgeTiles[0] = new GameObject[tileColumns]; //top
+        edgeTiles[1] = new GameObject[tileRows]; //left
+        edgeTiles[2] = new GameObject[tileRows]; //right
+        edgeTiles[3] = new GameObject[tileColumns]; //bottom
 
         for (int i = 0; i < 4; i++)
         {
@@ -183,7 +183,7 @@ public class GameBoard : MonoBehaviour
     public void saveBoardToFile()
     {
 
-        saveBoard = new SaveBoardObject(tileRows, tileColumns);
+        saveBoard = new SaveBoardObject(tileColumns, tileRows);
 
         //saves the edge tiles:
         for (int i = 0; i < 4; i++)
@@ -218,9 +218,9 @@ public class GameBoard : MonoBehaviour
         }
 
         //saves the game tiles:
-        for (int i = 0; i < tileRows; i++)
+        for (int i = 0; i < tileColumns; i++)
         {
-            for (int j = 0; j < tileColumns; j++)
+            for (int j = 0; j < tileRows; j++)
             {
                 var currentTile = tiles[i, j].GetComponent<Tile>();
                 if (currentTile.tileAttribute)
@@ -285,8 +285,8 @@ public class GameBoard : MonoBehaviour
 
                 if (saveBoard.boardHeight > 0 && saveBoard.boardWidth > 0)
                 {
-                    tileRows = saveBoard.boardWidth;
-                    tileColumns = saveBoard.boardHeight;
+                    tileColumns = saveBoard.boardWidth;
+                    tileRows = saveBoard.boardHeight;
 
                     loadEmptyBoard();
 

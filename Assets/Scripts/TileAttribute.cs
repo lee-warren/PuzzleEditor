@@ -152,7 +152,7 @@ public class TileAttribute : MonoBehaviour
             rotation = 270;
             transform.Rotate(0, 0, -270);
         } 
-        else if (position.x == GameBoard.instance.tileRows + 1)
+        else if (position.x == GameBoard.instance.tileColumns + 1)
         {
             rotation = 90;
             transform.Rotate(0, 0, -90);
@@ -162,7 +162,7 @@ public class TileAttribute : MonoBehaviour
             rotation = 180;
             transform.Rotate(0, 0, -180);
         }
-        else if (position.y == GameBoard.instance.tileColumns + 1)
+        else if (position.y == GameBoard.instance.tileRows + 1)
         {
             rotation = 0;
             //Its already facing the right way. I hope
