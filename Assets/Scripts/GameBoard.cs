@@ -21,7 +21,10 @@ public class GameBoard : MonoBehaviour
 
     public InputField enteredHeigthInput;
     public InputField enteredWidthInput;
-    public Color[] possibleColours;
+
+    public List<LazorColour> primaryColours;
+    public List<LazorColour> secondaryColours;
+
     //
 
     //Config Page stuff
@@ -93,13 +96,16 @@ public class GameBoard : MonoBehaviour
         gameBoardCanvas.gameObject.SetActive(true);
 
         //create all of the possible colours:
-        possibleColours = new Color[5] {
-            new Color(237, 186, 95, 93),
-            new Color(247, 101, 99, 97),
-            new Color(142, 101, 224, 88),
-            new Color(99, 228, 247, 97),
-            new Color(154, 240, 137, 94)
-            };
+        primaryColours = new List<LazorColour>();
+        primaryColours.Add(new LazorColour("red", new Color(255.0f / 255.0f, 5.0f / 255.0f, 5.0f / 255.0f)));
+        primaryColours.Add(new LazorColour("yellow", new Color(252, 236, 0)));
+        primaryColours.Add(new LazorColour("blue", new Color(0, 0, 255)));
+
+        secondaryColours = new List<LazorColour>();
+        secondaryColours.Add(new LazorColour("orange", new Color(255.0f / 255.0f, 126.0f / 255.0f, 0.0f), primaryColours.Find(t => t.colourName == "red"), primaryColours.Find(t => t.colourName == "yellow")));
+        secondaryColours.Add(new LazorColour("purple", new Color(186, 0, 241), primaryColours.Find(t => t.colourName == "red"), primaryColours.Find(t => t.colourName == "blue")));
+        secondaryColours.Add(new LazorColour("green", new Color(0, 255, 0), primaryColours.Find(t => t.colourName == "blue"), primaryColours.Find(t => t.colourName == "yellow")));
+
 
         //destroy any existing children of the palette, edge palette and game board
         foreach (Transform child in palette.transform)
@@ -210,6 +216,7 @@ public class GameBoard : MonoBehaviour
 
                         saveEdgeTile.type = currentAttribute.type;
                         saveEdgeTile.colorArrayNumber = currentAttribute.colorArrayNumber;
+                        saveEdgeTile.colourName = currentAttribute.mainTileColour.colourName;
 
                         saveBoard.edgeTiles.Add(saveEdgeTile);
                     }
@@ -244,6 +251,8 @@ public class GameBoard : MonoBehaviour
 
                         saveGameTile.type = currentAttribute.type;
                         saveGameTile.colorArrayNumber = currentAttribute.colorArrayNumber;
+                        saveGameTile.colourName = currentAttribute.mainTileColour.colourName;
+
                         saveGameTile.rotation = currentAttribute.rotation;
                         saveGameTile.isLocked = false;
 
@@ -296,6 +305,8 @@ public class GameBoard : MonoBehaviour
                 {
                     ShowConfigOptions();
                 }
+
+                fs.Close();
             }
             catch
             {
