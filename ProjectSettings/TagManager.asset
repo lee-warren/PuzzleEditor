@@ -50,6 +50,9 @@ TagManager:
   - name: WhatOnTheTileLayer
     uniqueID: 3066474887
     locked: 0
+  - name: OnTopOfWhatsOnTheTile
+    uniqueID: 3491225475
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

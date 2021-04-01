@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\GameBoard.cs" />
+    <Compile Include="Assets\Scripts\WorldSelectTile.cs" />
     <Compile Include="Assets\Scripts\EdgeTile.cs" />
     <Compile Include="Assets\Scripts\palette.cs" />
     <Compile Include="Assets\Scripts\TileAttribute.cs" />
@@ -61,7 +62,7 @@
     <Compile Include="Assets\Scripts\LevelSelectTile.cs" />
     <Compile Include="Assets\Scripts\SaveBoardObject.cs" />
     <Compile Include="Assets\Scripts\LevelSelector.cs" />
-    <Compile Include="Assets\Scripts\WorldSelectTile.cs" />
+    <Compile Include="Assets\Scripts\LazorColour.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

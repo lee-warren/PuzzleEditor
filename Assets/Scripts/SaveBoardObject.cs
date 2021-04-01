@@ -37,6 +37,7 @@ public class SaveEdgeTile
 
     public string type;
     public int colorArrayNumber = -1; //no colour
+    public string colourName;
 }
 
 [Serializable]
@@ -48,5 +49,6 @@ public class SaveGameTile
     public string type;
     public int rotation = 0;
     public int colorArrayNumber = -1; //no colour
+    public string colourName;
     public bool isLocked;
 }

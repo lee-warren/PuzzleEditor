@@ -11,7 +11,8 @@ public class TileAttribute : MonoBehaviour
 
     public string type;
     public int rotation = 0;
-    public int colorArrayNumber = -1; //no colour
+    public int colorArrayNumber = -1; //no colour //old
+    public LazorColour mainTileColour = new LazorColour("White", new Color(255,255,255,255));
 
     void Awake()
     {
@@ -36,10 +37,13 @@ public class TileAttribute : MonoBehaviour
         transform.localPosition = new Vector2(0, 0);
 
         colorArrayNumber = tileToCopy.colorArrayNumber;
-        if (colorArrayNumber >= 0 ) //this only really needs to be here while you can save edge tiles without a colour
+
+        mainTileColour = GameBoard.instance.primaryColours.Find(c => c.colourName == tileToCopy.colourName);
+        if (mainTileColour == null)
         {
-            thisAttributeRenderer.color = new Color(GameBoard.instance.possibleColours[colorArrayNumber].r / 255f, GameBoard.instance.possibleColours[colorArrayNumber].g / 255f, GameBoard.instance.possibleColours[colorArrayNumber].b / 255, 1);
+            mainTileColour = GameBoard.instance.secondaryColours.Find(c => c.colourName == tileToCopy.colourName);
         }
+        thisAttributeRenderer.color = mainTileColour.colour;
 
         foreach (Sprite sprite in GameBoard.instance.possibleEdgeAttributes)
         {
@@ -48,7 +52,6 @@ public class TileAttribute : MonoBehaviour
             }
         }
         type = tileToCopy.type;
-        colorArrayNumber = tileToCopy.colorArrayNumber;
     }
 
     public void CopyFromGameSave(SaveGameTile tileToCopy)
@@ -57,10 +60,13 @@ public class TileAttribute : MonoBehaviour
         transform.localPosition = new Vector2(0, 0);
 
         colorArrayNumber = tileToCopy.colorArrayNumber;
-        if (colorArrayNumber >= 0) //this only really needs to be here while you can save edge tiles without a colour
+
+        mainTileColour = GameBoard.instance.primaryColours.Find(c => c.colourName == tileToCopy.colourName);
+        if (mainTileColour == null)
         {
-            thisAttributeRenderer.color = new Color(GameBoard.instance.possibleColours[colorArrayNumber].r / 255f, GameBoard.instance.possibleColours[colorArrayNumber].g / 255f, GameBoard.instance.possibleColours[colorArrayNumber].b / 255, 1);
+            mainTileColour = GameBoard.instance.secondaryColours.Find(c => c.colourName == tileToCopy.colourName);
         }
+        thisAttributeRenderer.color = mainTileColour.colour;
 
         foreach (Sprite sprite in GameBoard.instance.possibleAttributes)
         {
@@ -72,7 +78,6 @@ public class TileAttribute : MonoBehaviour
         type = tileToCopy.type;
         rotation = tileToCopy.rotation;
         InitialRotate();
-        colorArrayNumber = tileToCopy.colorArrayNumber;
     }
 
     public void Copy(TileAttribute tileToCopy)
@@ -80,7 +85,9 @@ public class TileAttribute : MonoBehaviour
         transform.localScale = new Vector3(1, 1, 0);
         transform.localPosition = new Vector2(0, 0);
 
-        thisAttributeRenderer.color = tileToCopy.thisAttributeRenderer.color;
+        mainTileColour = tileToCopy.mainTileColour;
+        thisAttributeRenderer.color = mainTileColour.colour;
+
         thisAttributeRenderer.sprite = tileToCopy.thisAttributeRenderer.sprite;
         type = tileToCopy.type;
         rotation = tileToCopy.rotation;
@@ -124,12 +131,21 @@ public class TileAttribute : MonoBehaviour
     private void CycleColours()
     {
         colorArrayNumber = colorArrayNumber + 1;
-        if (colorArrayNumber == GameBoard.instance.possibleColours.Length)
+        if (colorArrayNumber == 6) // 6 = number of primary and secondary colours added
         {
             colorArrayNumber = 0;
         }
 
-        thisAttributeRenderer.color = new Color(GameBoard.instance.possibleColours[colorArrayNumber].r/255f, GameBoard.instance.possibleColours[colorArrayNumber].g/255f, GameBoard.instance.possibleColours[colorArrayNumber].b/255, 1);
+        if (colorArrayNumber < 3)
+        {
+            mainTileColour = GameBoard.instance.primaryColours[colorArrayNumber];
+        }
+        else
+        {
+            mainTileColour = GameBoard.instance.secondaryColours[colorArrayNumber - 3];
+        }
+
+        thisAttributeRenderer.color = mainTileColour.colour;
     }
 
     private void Rotate()
