@@ -9,6 +9,12 @@ public class TileAttribute : MonoBehaviour
     public RectTransform thisAttributeRectTransform;
     public SpriteRenderer thisAttributeRenderer;
 
+    //specific to edge tiles
+    public GameObject edgeTileArrow;
+
+    //specific to game tiles
+    //so far nothing. More to come...
+
     public string type;
     public int rotation = 0;
     public int colorArrayNumber = -1; //no colour //old
@@ -18,7 +24,7 @@ public class TileAttribute : MonoBehaviour
     {
         thisAttributeTile = GetComponent<GameObject>();
         thisAttributeRectTransform = GetComponent<RectTransform>();
-        thisAttributeRenderer = GetComponent<SpriteRenderer>();
+        //thisAttributeRenderer = GetComponent<SpriteRenderer>();
     }
     // Start is called before the first frame update
     void Start()
@@ -52,6 +58,12 @@ public class TileAttribute : MonoBehaviour
             }
         }
         type = tileToCopy.type;
+
+        if (type == "LightReceiver" || type == "LightReceiverStar")
+        {
+            //flip the arrow so it points in
+            edgeTileArrow.transform.Rotate(180, 0, 0);
+        }
     }
 
     public void CopyFromGameSave(SaveGameTile tileToCopy)
@@ -75,6 +87,7 @@ public class TileAttribute : MonoBehaviour
                 thisAttributeRenderer.sprite = sprite;
             }
         }
+
         type = tileToCopy.type;
         rotation = tileToCopy.rotation;
         InitialRotate();
@@ -89,6 +102,7 @@ public class TileAttribute : MonoBehaviour
         thisAttributeRenderer.color = mainTileColour.colour;
 
         thisAttributeRenderer.sprite = tileToCopy.thisAttributeRenderer.sprite;
+        edgeTileArrow.transform.rotation = tileToCopy.edgeTileArrow.transform.rotation;
         type = tileToCopy.type;
         rotation = tileToCopy.rotation;
         colorArrayNumber = tileToCopy.colorArrayNumber;
@@ -110,6 +124,12 @@ public class TileAttribute : MonoBehaviour
         thisAttributeRenderer.sprite = attributeSprite;
 
         type = attributeSprite.name;
+
+        if (type == "LightReceiver" || type == "LightReceiverStar")
+        {
+            //flip the arrow so it points in
+            edgeTileArrow.transform.Rotate(180, 0, 0);
+        }
     }
 
     public void ShouldTransform()

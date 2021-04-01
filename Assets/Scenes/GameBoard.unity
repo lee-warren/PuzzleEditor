@@ -178,7 +178,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 842097047
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2bfe9e5ae42570c4aab01fb1e4447abf, type: 3}
   m_Color: {r: 0.29803923, g: 0.29803923, b: 0.29803923, a: 0}
@@ -397,7 +397,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 842097047
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2bfe9e5ae42570c4aab01fb1e4447abf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
@@ -890,7 +890,6 @@ MonoBehaviour:
   tileSpacing: 0.1
   enteredHeigthInput: {fileID: 795055167}
   enteredWidthInput: {fileID: 2092861891}
-  possibleColours: []
   levelConifgOptionsCanvas: {fileID: 2095420718}
   saveConfigButton: {fileID: 1484217530}
   gameBoardCanvas: {fileID: 1618639844}
@@ -913,9 +912,9 @@ MonoBehaviour:
   edgeTilePrefab: {fileID: 4607835838335386728, guid: ab0cf963960666f47b7bde7082ed8544,
     type: 3}
   possibleEdgeAttributes:
-  - {fileID: 21300000, guid: a4a322eab8646fe45903c43e3f37839b, type: 3}
-  - {fileID: 21300000, guid: 599301af3e3066c4794e0ed6ccf617f7, type: 3}
-  - {fileID: 21300000, guid: a6df17698688c21499b632170e74f177, type: 3}
+  - {fileID: 21300000, guid: 4ba6a77fe48e47b478e40309c23719aa, type: 3}
+  - {fileID: 21300000, guid: 775f554786f6252418d6b76c988881e7, type: 3}
+  - {fileID: 21300000, guid: ef6444ce76ec9d34cb1acd0d78ff573c, type: 3}
   edgePaletteTiles: []
   selectedTile: {fileID: 0}
   selectedEdgeTile: {fileID: 0}
@@ -1689,7 +1688,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 842097047
-  m_SortingLayer: -3
+  m_SortingLayer: -4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2bfe9e5ae42570c4aab01fb1e4447abf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
