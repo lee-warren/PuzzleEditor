@@ -142,6 +142,7 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
                 }
 
                 GameBoard.instance.selectedEdgeTile = edgeTileAttribute.GetComponent<TileAttribute>();
+                GameBoard.instance.selectedEdgeTile.Copy(edgeTileAttribute.GetComponent<TileAttribute>());
                 spriteRenderer.sprite = mySecondSprite;
             }
         }
