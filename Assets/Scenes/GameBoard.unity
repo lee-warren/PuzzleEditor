@@ -904,8 +904,9 @@ MonoBehaviour:
   possibleAttributes:
   - {fileID: 21300000, guid: 401f10a0649cf6a4ca9748cd31556b4b, type: 3}
   - {fileID: 21300000, guid: edc09f428f8d5bc4e84c2e773e13331e, type: 3}
-  - {fileID: 21300000, guid: e14208d491e36304794871ddc5953583, type: 3}
-  - {fileID: 21300000, guid: b9fa55336c30b7940a7eebe4605252cd, type: 3}
+  - {fileID: 21300000, guid: 065fa2062c492134a942d75dc173fcf4, type: 3}
+  - {fileID: 21300000, guid: 2f7b688b9fb40f64e9433f2a9a6a72fb, type: 3}
+  - {fileID: 21300000, guid: 9a2c8bebc78d9c1419622e66f4f1542b, type: 3}
   - {fileID: 21300000, guid: 557f646d15dfe914e925a28dba1b3e49, type: 3}
   - {fileID: 21300000, guid: e51a3d862ea3f59408f92ae2efe74c14, type: 3}
   paletteTiles: []

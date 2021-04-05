@@ -13,7 +13,12 @@ public class TileAttribute : MonoBehaviour
     public GameObject edgeTileArrow;
 
     //specific to game tiles
-    //so far nothing. More to come...
+    public GameObject leftRectangleWithArrow;
+    public GameObject topRectangleWithArrow;
+    public GameObject rightRectangleWithArrow;
+    public GameObject bottomRectangleWithArrow;
+
+    public Sprite rainbowRectangleSprite;
 
     public string type;
     public int rotation = 0;
@@ -49,12 +54,11 @@ public class TileAttribute : MonoBehaviour
         {
             mainTileColour = GameBoard.instance.secondaryColours.Find(c => c.colourName == tileToCopy.colourName);
         }
-        thisAttributeRenderer.color = mainTileColour.colour;
 
         foreach (Sprite sprite in GameBoard.instance.possibleEdgeAttributes)
         {
             if (sprite.name == tileToCopy.type) {
-                thisAttributeRenderer.sprite = sprite;
+                SetSprite(sprite);
             }
         }
         type = tileToCopy.type;
@@ -64,6 +68,8 @@ public class TileAttribute : MonoBehaviour
             //flip the arrow so it points in
             edgeTileArrow.transform.Rotate(180, 0, 0);
         }
+
+        SetColour();
     }
 
     public void CopyFromGameSave(SaveGameTile tileToCopy)
@@ -78,19 +84,23 @@ public class TileAttribute : MonoBehaviour
         {
             mainTileColour = GameBoard.instance.secondaryColours.Find(c => c.colourName == tileToCopy.colourName);
         }
-        thisAttributeRenderer.color = mainTileColour.colour;
+        if (mainTileColour == null)
+        {
+            mainTileColour = new LazorColour("White", new Color(255, 255, 255, 255));
+        }
 
         foreach (Sprite sprite in GameBoard.instance.possibleAttributes)
         {
             if (sprite.name == tileToCopy.type)
             {
-                thisAttributeRenderer.sprite = sprite;
+                SetSprite(sprite);
             }
         }
 
         type = tileToCopy.type;
         rotation = tileToCopy.rotation;
         InitialRotate();
+        SetColour();
     }
 
     public void Copy(TileAttribute tileToCopy)
@@ -102,7 +112,26 @@ public class TileAttribute : MonoBehaviour
         thisAttributeRenderer.color = mainTileColour.colour;
 
         thisAttributeRenderer.sprite = tileToCopy.thisAttributeRenderer.sprite;
-        edgeTileArrow.transform.rotation = tileToCopy.edgeTileArrow.transform.rotation;
+
+        //stuff for edge tiles:
+        if (tileToCopy.edgeTileArrow)
+        {
+            edgeTileArrow.transform.rotation = tileToCopy.edgeTileArrow.transform.rotation;
+        }
+
+        //stuff for game tiles:
+        if (tileToCopy.leftRectangleWithArrow && tileToCopy.topRectangleWithArrow && tileToCopy.rightRectangleWithArrow && tileToCopy.bottomRectangleWithArrow)
+        {
+            leftRectangleWithArrow.SetActive(tileToCopy.leftRectangleWithArrow.activeSelf);
+            topRectangleWithArrow.SetActive(tileToCopy.topRectangleWithArrow.activeSelf);
+            rightRectangleWithArrow.SetActive(tileToCopy.rightRectangleWithArrow.activeSelf);
+            bottomRectangleWithArrow.SetActive(tileToCopy.bottomRectangleWithArrow.activeSelf);
+
+            //for the rainbow sprite on the bottom rectangle
+            bottomRectangleWithArrow.GetComponent<SpriteRenderer>().sprite = tileToCopy.bottomRectangleWithArrow.GetComponent<SpriteRenderer>().sprite;
+
+        }
+
         type = tileToCopy.type;
         rotation = tileToCopy.rotation;
         colorArrayNumber = tileToCopy.colorArrayNumber;
@@ -130,11 +159,58 @@ public class TileAttribute : MonoBehaviour
             //flip the arrow so it points in
             edgeTileArrow.transform.Rotate(180, 0, 0);
         }
+
+        if (type == "Split")
+        {
+            bottomRectangleWithArrow.SetActive(true);
+            leftRectangleWithArrow.SetActive(true);
+            rightRectangleWithArrow.SetActive(true);
+        }
+
+        if (type == "Merge")
+        {
+            topRectangleWithArrow.SetActive(true);
+            leftRectangleWithArrow.SetActive(true);
+            rightRectangleWithArrow.SetActive(true);
+        }
+
+        if (type == "Transform")
+        {
+            topRectangleWithArrow.SetActive(true);
+            bottomRectangleWithArrow.SetActive(true);
+            bottomRectangleWithArrow.GetComponent<SpriteRenderer>().sprite = rainbowRectangleSprite;
+        }
+    }
+
+    public void SetColour()
+    {
+        //colour the relevant bits:
+        if (type == "Star" || type == "LightEmitter" || type == "LightReceiver" || type == "LightReceiverStar")
+        {
+            thisAttributeRenderer.color = mainTileColour.colour;
+        }
+        else if (type == "Transform")
+        {
+            topRectangleWithArrow.GetComponent<SpriteRenderer>().color = mainTileColour.colour;
+        }
+        else if (type == "Split")
+        {
+            bottomRectangleWithArrow.GetComponent<SpriteRenderer>().color = mainTileColour.colour;
+            leftRectangleWithArrow.GetComponent<SpriteRenderer>().color = mainTileColour.composition[0].colour;
+            rightRectangleWithArrow.GetComponent<SpriteRenderer>().color = mainTileColour.composition[1].colour;
+
+        }
+        else if (type == "Merge")
+        {
+            topRectangleWithArrow.GetComponent<SpriteRenderer>().color = mainTileColour.colour;
+            leftRectangleWithArrow.GetComponent<SpriteRenderer>().color = mainTileColour.composition[0].colour;
+            rightRectangleWithArrow.GetComponent<SpriteRenderer>().color = mainTileColour.composition[1].colour;
+        }
     }
 
     public void ShouldTransform()
     {
-        if (type == "Filter" || type == "Star"  || type == "LightEmitter" || type == "LightReceiver" || type == "LightReceiverStar")
+        if (type == "Transform" || type == "Split" || type == "Merge" || type == "Star" || type == "LightEmitter" || type == "LightReceiver" || type == "LightReceiverStar")
         {
             CycleColours();
         }
@@ -151,21 +227,35 @@ public class TileAttribute : MonoBehaviour
     private void CycleColours()
     {
         colorArrayNumber = colorArrayNumber + 1;
-        if (colorArrayNumber == 6) // 6 = number of primary and secondary colours added
+
+        if (type == "Transform" || type == "Star" || type == "LightEmitter" || type == "LightReceiver" || type == "LightReceiverStar")
         {
-            colorArrayNumber = 0;
+            if (colorArrayNumber == 6) // 6 = number of primary and secondary colours added
+            {
+                colorArrayNumber = 0;
+            }
+
+            if (colorArrayNumber < 3)
+            {
+                mainTileColour = GameBoard.instance.primaryColours[colorArrayNumber];
+            }
+            else
+            {
+                mainTileColour = GameBoard.instance.secondaryColours[colorArrayNumber - 3];
+            }
+        }
+        else if (type == "Split" || type == "Merge")
+        {
+            if (colorArrayNumber == 3) // 6 = number of primary and secondary colours added
+            {
+                colorArrayNumber = 0;
+            }
+
+            mainTileColour = GameBoard.instance.secondaryColours[colorArrayNumber];
         }
 
-        if (colorArrayNumber < 3)
-        {
-            mainTileColour = GameBoard.instance.primaryColours[colorArrayNumber];
-        }
-        else
-        {
-            mainTileColour = GameBoard.instance.secondaryColours[colorArrayNumber - 3];
-        }
+        SetColour();
 
-        thisAttributeRenderer.color = mainTileColour.colour;
     }
 
     private void Rotate()
