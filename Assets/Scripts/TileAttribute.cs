@@ -17,6 +17,10 @@ public class TileAttribute : MonoBehaviour
     public GameObject topRectangleWithArrow;
     public GameObject rightRectangleWithArrow;
     public GameObject bottomRectangleWithArrow;
+    public GameObject leftArrow;
+    public GameObject topArrow;
+    public GameObject rightArrow;
+    public GameObject bottomArrow;
 
     public Sprite rainbowRectangleSprite;
 
@@ -179,12 +183,15 @@ public class TileAttribute : MonoBehaviour
         {
             bottomRectangleWithArrow.SetActive(true);
             leftRectangleWithArrow.SetActive(true);
+            leftArrow.transform.Rotate(0, 0, 180);
             rightRectangleWithArrow.SetActive(true);
+            rightArrow.transform.Rotate(0, 0, 180);
         }
 
         if (type == "Merge")
         {
             topRectangleWithArrow.SetActive(true);
+            topArrow.transform.Rotate(0, 0, 180);
             leftRectangleWithArrow.SetActive(true);
             rightRectangleWithArrow.SetActive(true);
         }
@@ -192,6 +199,7 @@ public class TileAttribute : MonoBehaviour
         if (type == "Transform")
         {
             topRectangleWithArrow.SetActive(true);
+            topArrow.transform.Rotate(0, 0, 180);
             bottomRectangleWithArrow.SetActive(true);
             bottomRectangleWithArrow.GetComponent<SpriteRenderer>().sprite = rainbowRectangleSprite;
         }
