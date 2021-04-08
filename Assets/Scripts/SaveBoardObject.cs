@@ -38,6 +38,7 @@ public class SaveEdgeTile
     public string type;
     public int colorArrayNumber = -1; //no colour
     public string colourName;
+    public bool isLocked = true;
 }
 
 [Serializable]
