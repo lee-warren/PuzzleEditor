@@ -93,9 +93,20 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             }
             else // no tile in the palette is selected
             {
-                if (tileAttribute)
+                if (tileAttribute && GameBoard.instance.selectedEditOptionsTile)
                 {
-                    tileAttribute.GetComponent<TileAttribute>().ShouldTransform(); //This will change the colour of rotate depending on the attributes type
+                    if (GameBoard.instance.selectedEditOptionsTile.type == "Rotate")
+                    {
+                        tileAttribute.GetComponent<TileAttribute>().ShouldTransformRotate(); 
+                    }
+                    else if (GameBoard.instance.selectedEditOptionsTile.type == "Colour")
+                    {
+                        tileAttribute.GetComponent<TileAttribute>().ShouldTransformColour();
+                    }
+                    else if (GameBoard.instance.selectedEditOptionsTile.type == "Lock")
+                    {
+                        tileAttribute.GetComponent<TileAttribute>().ShouldTransformLock();
+                    }
                 }
             }
         }

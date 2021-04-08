@@ -53,6 +53,7 @@
     <UnityVersion>2020.2.7f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\LazorColour.cs" />
     <Compile Include="Assets\Scripts\GameBoard.cs" />
     <Compile Include="Assets\Scripts\WorldSelectTile.cs" />
     <Compile Include="Assets\Scripts\EdgeTile.cs" />
@@ -62,7 +63,7 @@
     <Compile Include="Assets\Scripts\LevelSelectTile.cs" />
     <Compile Include="Assets\Scripts\SaveBoardObject.cs" />
     <Compile Include="Assets\Scripts\LevelSelector.cs" />
-    <Compile Include="Assets\Scripts\LazorColour.cs" />
+    <Compile Include="Assets\Scripts\EditOptionsTile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

@@ -120,9 +120,20 @@ public class EdgeTile : MonoBehaviour, IPointerClickHandler
             }
             else // no tile in the palette is selected
             {
-                if (edgeTileAttribute)
+                if (edgeTileAttribute && GameBoard.instance.selectedEditOptionsTile)
                 {
-                    edgeTileAttribute.GetComponent<TileAttribute>().ShouldTransform(); //This will change the colour of rotate depending on the attributes type
+                    if (GameBoard.instance.selectedEditOptionsTile.type == "Rotate") //this should always do nothing because edge tile shouldn't rotate
+                    {
+                        edgeTileAttribute.GetComponent<TileAttribute>().ShouldTransformRotate();
+                    }
+                    else if (GameBoard.instance.selectedEditOptionsTile.type == "Colour")
+                    {
+                        edgeTileAttribute.GetComponent<TileAttribute>().ShouldTransformColour();
+                    }
+                    else if (GameBoard.instance.selectedEditOptionsTile.type == "Lock")
+                    {
+                        edgeTileAttribute.GetComponent<TileAttribute>().ShouldTransformLock();
+                    }
                 }
             }
         }

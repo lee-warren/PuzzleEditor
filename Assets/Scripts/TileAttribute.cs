@@ -25,6 +25,9 @@ public class TileAttribute : MonoBehaviour
     public int colorArrayNumber = -1; //no colour //old
     public LazorColour mainTileColour = new LazorColour("White", new Color(255,255,255,255));
 
+    public bool isLocked = false;
+    public GameObject lockedImage;
+
     void Awake()
     {
         thisAttributeTile = GetComponent<GameObject>();
@@ -70,6 +73,8 @@ public class TileAttribute : MonoBehaviour
         }
 
         SetColour();
+
+        lockedImage.SetActive(isLocked);
     }
 
     public void CopyFromGameSave(SaveGameTile tileToCopy)
@@ -99,8 +104,12 @@ public class TileAttribute : MonoBehaviour
 
         type = tileToCopy.type;
         rotation = tileToCopy.rotation;
+        isLocked = tileToCopy.isLocked;
+
         InitialRotate();
         SetColour();
+
+        lockedImage.SetActive(isLocked);
     }
 
     public void Copy(TileAttribute tileToCopy)
@@ -135,6 +144,12 @@ public class TileAttribute : MonoBehaviour
         type = tileToCopy.type;
         rotation = tileToCopy.rotation;
         colorArrayNumber = tileToCopy.colorArrayNumber;
+        isLocked = tileToCopy.isLocked;
+
+        if (lockedImage)
+        {
+            lockedImage.SetActive(isLocked);
+        }
     }
 
     public void PositionInTile(bool isEdgeTile = false)
@@ -208,20 +223,34 @@ public class TileAttribute : MonoBehaviour
         }
     }
 
-    public void ShouldTransform()
+    public void ShouldTransformColour()
     {
         if (type == "Transform" || type == "Split" || type == "Merge" || type == "Star" || type == "LightEmitter" || type == "LightReceiver" || type == "LightReceiverStar")
         {
             CycleColours();
         }
-        else if (type == "Reflector" || type == "Refractor" )
-        {
-            Rotate();
-        }
         else 
         {
             //do nothing
         }
+    }
+
+    public void ShouldTransformRotate()
+    {
+        if (type == "Reflector" || type == "Refractor" || type == "Transform" || type == "Split" || type == "Merge" || type == "Star")
+        {
+            Rotate();
+        }
+        else
+        {
+            //do nothing
+        }
+    }
+
+    public void ShouldTransformLock()
+    {
+        //everything can be locked/unlocked at the moment
+        LockUnlock();
     }
 
     private void CycleColours()
@@ -262,11 +291,18 @@ public class TileAttribute : MonoBehaviour
     {
         rotation = rotation + 90;
         transform.Rotate(0, 0, -90);
+
+        //locked image rotates the opposite way so it always stay upright
+        lockedImage.transform.Rotate(0, 0, 90);
+
     }
 
     private void InitialRotate()
     {
         transform.Rotate(0, 0, -rotation);
+
+        //locked image rotates the opposite way so it always stay upright
+        lockedImage.transform.Rotate(0, 0, rotation);
     }
 
     public void RotateToFaceCenter(Vector2 position)
@@ -277,16 +313,25 @@ public class TileAttribute : MonoBehaviour
         {
             rotation = 270;
             transform.Rotate(0, 0, -270);
+
+            //locked image rotates the opposite way so it always stay upright
+            lockedImage.transform.Rotate(0, 0, rotation);
         } 
         else if (position.x == GameBoard.instance.tileColumns + 1)
         {
             rotation = 90;
             transform.Rotate(0, 0, -90);
+
+            //locked image rotates the opposite way so it always stay upright
+            lockedImage.transform.Rotate(0, 0, rotation);
         }
         else if (position.y == 0)
         {
             rotation = 180;
             transform.Rotate(0, 0, -180);
+
+            //locked image rotates the opposite way so it always stay upright
+            lockedImage.transform.Rotate(0, 0, rotation);
         }
         else if (position.y == GameBoard.instance.tileRows + 1)
         {
@@ -294,5 +339,12 @@ public class TileAttribute : MonoBehaviour
             //Its already facing the right way. I hope
         }
 
+    }
+
+    private void LockUnlock()
+    {
+        isLocked = !isLocked;
+
+        lockedImage.SetActive(isLocked);
     }
 }

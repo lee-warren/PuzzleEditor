@@ -39,6 +39,7 @@ public class GameBoard : MonoBehaviour
     public GameObject puzzleGameBoard;
     public GameObject palette;
     public GameObject edgePalette;
+    public GameObject editOptionsPalette;
 
     public Vector2 distanceFromCenterToEdge;
     public Vector2 screenSize;
@@ -46,7 +47,6 @@ public class GameBoard : MonoBehaviour
     
     public GameObject tilePrefab;
     public GameObject[,] tiles;
-
     public Sprite[] possibleAttributes;
     public GameObject[] paletteTiles;
 
@@ -55,8 +55,13 @@ public class GameBoard : MonoBehaviour
     public GameObject[][] edgeTiles;
     public GameObject[] edgePaletteTiles;
 
+    public GameObject editOptionsTilePrefab;
+    public Sprite[] possibleEditOptionsAttributes;
+    public GameObject[] editOptionsPaletteTiles;
+
     public TileAttribute selectedTile;
     public TileAttribute selectedEdgeTile;
+    public TileAttribute selectedEditOptionsTile;
 
     public Button exportLevelButton;
     public Button changeConfigButton;
@@ -116,6 +121,10 @@ public class GameBoard : MonoBehaviour
         {
             GameObject.Destroy(child.gameObject);
         }
+        foreach (Transform child in editOptionsPalette.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
         foreach (Transform child in puzzleGameBoard.transform)
         {
             GameObject.Destroy(child.gameObject);
@@ -143,6 +152,19 @@ public class GameBoard : MonoBehaviour
             if (tile)
             {
                 tile.InitialiseForPalette(j, possibleEdgeAttributes[j]);
+            }
+        }
+
+        //initialise the editOptionsPalette editOptions
+        //initialise the pallete, and all of the squares to go in there
+        editOptionsPaletteTiles = new GameObject[possibleEditOptionsAttributes.Length];
+        for (int j = 0; j < possibleEditOptionsAttributes.Length; j++)
+        {
+            editOptionsPaletteTiles[j] = (GameObject)Instantiate(editOptionsTilePrefab, new Vector2(0, 0), Quaternion.identity, editOptionsPalette.transform);
+            var tile = editOptionsPaletteTiles[j].GetComponent<EditOptionsTile>();
+            if (tile)
+            {
+                tile.InitialiseForPalette(j, possibleEditOptionsAttributes[j]);
             }
         }
 
@@ -204,19 +226,14 @@ public class GameBoard : MonoBehaviour
                     {
                         Debug.Log(currentAttribute.name);
                         var saveEdgeTile = new SaveEdgeTile();
-                        /*
-                        public int side; //side is which of the strips it will fall into (top, left, right, bottom)
-                        public int index; //index is which index of that row it will fall into
-
-                        public string type;
-                        public int colorArrayNumber = -1; //no colour
-                        */
+                        
                         saveEdgeTile.side = currentTile.side;
                         saveEdgeTile.index = currentTile.index;
 
                         saveEdgeTile.type = currentAttribute.type;
                         saveEdgeTile.colorArrayNumber = currentAttribute.colorArrayNumber;
                         saveEdgeTile.colourName = currentAttribute.mainTileColour.colourName;
+                        //saveEdgeTile.isLocked = currentAttribute.isLocked;
 
                         saveBoard.edgeTiles.Add(saveEdgeTile);
                     }
@@ -237,15 +254,7 @@ public class GameBoard : MonoBehaviour
                     {
                         Debug.Log(currentAttribute.name);
                         var saveGameTile = new SaveGameTile();
-                        /*
-                        positionX;
-                        public int positionY;
-
-                        public string type;
-                        public int rotation = 0;
-                        public int colorArrayNumber = -1; //no colour
-                        public bool isLocked
-                        */
+                       
                         saveGameTile.positionX = (int)currentTile.position.x;
                         saveGameTile.positionY = (int)currentTile.position.y;
 
@@ -254,7 +263,7 @@ public class GameBoard : MonoBehaviour
                         saveGameTile.colourName = currentAttribute.mainTileColour.colourName;
 
                         saveGameTile.rotation = currentAttribute.rotation;
-                        saveGameTile.isLocked = false;
+                        saveGameTile.isLocked = currentAttribute.isLocked;
 
                         saveBoard.gameTiles.Add(saveGameTile);
                     }
