@@ -113,7 +113,7 @@ public class LevelSelector : MonoBehaviour
             var tile = levelTiles[j].GetComponent<LevelSelectTile>();
             if (tile)
             {
-                tile.InitialiseForLevels(j, levelNames[j]);
+                tile.InitialiseForLevels(j, levelNames[j].Replace("\\","/"));
             }
         }
         //create 'add new level' button
